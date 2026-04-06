@@ -6,57 +6,57 @@
     ?>
     
     <!-- Map Options -->
-    <div class="toolbar" style="margin-bottom: 30px;">
+    <div class="toolbar map-toolbar">
         <button class="btn-fn" onclick="showMap('poi')" id="btn-poi">🏷️ Com POIs</button>
         <button class="btn-fn btn-fn-outline" onclick="showMap('blank')" id="btn-blank">🗺️ Limpo</button>
     </div>
     
     <!-- Map Display -->
-    <div class="feature-card" style="padding: 20px; max-width: 1000px; margin: 0 auto;">
-        <div style="position: relative; text-align: center;">
+    <div class="feature-card map-panel">
+        <div class="map-frame">
             <img id="map-image" 
                  src="<?= htmlspecialchars($mapUrl) ?>" 
                  alt="Mapa do Fortnite"
-                 style="width: 100%; max-width: 900px; height: auto; border-radius: 12px; cursor: zoom-in;"
+                 class="map-image"
                  onclick="openFullscreen()"
                  onerror="this.src='https://fortnite-api.com/images/map.png'">
         </div>
         
-        <div style="text-align: center; margin-top: 20px;">
-            <p style="color: var(--text-secondary);">💡 Clique no mapa para ver em tela cheia</p>
+        <div class="map-hint">
+            <p class="text-muted-soft">💡 Clique no mapa para ver em tela cheia</p>
         </div>
     </div>
     
     <!-- Season Info -->
-    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 40px; max-width: 1000px; margin-left: auto; margin-right: auto;">
-        <div class="feature-card" style="padding: 25px; text-align: center;">
-            <span style="font-size: 2.5rem;">🏝️</span>
-            <h3 style="margin: 15px 0 10px;">Capítulo 6</h3>
-            <p style="color: var(--text-secondary);">Pacific Break</p>
+    <div class="season-grid">
+        <div class="feature-card season-card">
+            <span class="season-card__icon">🏝️</span>
+            <h3 class="season-card__title">Capítulo 6</h3>
+            <p class="text-muted-soft">Pacific Break</p>
         </div>
-        <div class="feature-card" style="padding: 25px; text-align: center;">
-            <span style="font-size: 2.5rem;">❄️</span>
-            <h3 style="margin: 15px 0 10px;">Temporada 1</h3>
-            <p style="color: var(--text-secondary);">Inverno 2024/2025</p>
+        <div class="feature-card season-card">
+            <span class="season-card__icon">❄️</span>
+            <h3 class="season-card__title">Temporada 1</h3>
+            <p class="text-muted-soft">Inverno 2024/2025</p>
         </div>
-        <div class="feature-card" style="padding: 25px; text-align: center;">
-            <span style="font-size: 2.5rem;">📍</span>
-            <h3 style="margin: 15px 0 10px;">Novo Mapa</h3>
-            <p style="color: var(--text-secondary);">Ilha renovada</p>
+        <div class="feature-card season-card">
+            <span class="season-card__icon">📍</span>
+            <h3 class="season-card__title">Novo Mapa</h3>
+            <p class="text-muted-soft">Ilha renovada</p>
         </div>
     </div>
     
     <!-- POI List -->
-    <div style="margin-top: 50px; max-width: 1000px; margin-left: auto; margin-right: auto;">
-        <h2 style="text-align: center; margin-bottom: 30px;">
+    <div class="poi-section">
+        <h2 class="poi-title">
             <span class="text-gradient">📍 Pontos de Interesse (POIs)</span>
         </h2>
         
-        <div class="items-grid" style="grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">
+        <div class="items-grid poi-grid">
             <?php foreach ($pois as $poi): ?>
-            <div class="feature-card poi-card" style="padding: 15px; text-align: center;">
-                <span style="font-size: 1.8rem;"><?= $poi['icon'] ?></span>
-                <p style="margin-top: 10px; font-weight: 600;"><?= htmlspecialchars($poi['name']) ?></p>
+            <div class="feature-card poi-card">
+                <span class="poi-card__icon"><?= $poi['icon'] ?></span>
+                <p class="poi-card__name"><?= htmlspecialchars($poi['name']) ?></p>
             </div>
             <?php endforeach; ?>
         </div>
@@ -64,21 +64,10 @@
 </div>
 
 <!-- Fullscreen Modal -->
-<div id="fullscreen-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 9999; cursor: zoom-out;" onclick="closeFullscreen()">
-    <img id="fullscreen-image" src="" alt="Mapa em tela cheia" style="max-width: 95%; max-height: 95%; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);">
-    <button style="position: absolute; top: 20px; right: 30px; background: none; border: none; color: white; font-size: 40px; cursor: pointer;" onclick="closeFullscreen()">×</button>
+<div id="fullscreen-modal" class="fullscreen-modal" onclick="closeFullscreen()">
+    <img id="fullscreen-image" src="" alt="Mapa em tela cheia" class="fullscreen-modal__image">
+    <button class="fullscreen-modal__close" onclick="closeFullscreen()">×</button>
 </div>
-
-<style>
-.poi-card {
-    transition: all 0.3s ease;
-}
-
-.poi-card:hover {
-    transform: translateY(-5px);
-    box-shadow: 0 10px 30px rgba(157, 78, 221, 0.3);
-}
-</style>
 
 <script>
 const mapUrlPoi = <?= json_encode((string) $mapUrl, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>;
@@ -106,12 +95,12 @@ function openFullscreen() {
     const mapImg = document.getElementById('map-image');
     
     fullImg.src = mapImg.src;
-    modal.style.display = 'block';
+    modal.classList.add('is-open');
     document.body.style.overflow = 'hidden';
 }
 
 function closeFullscreen() {
-    document.getElementById('fullscreen-modal').style.display = 'none';
+    document.getElementById('fullscreen-modal').classList.remove('is-open');
     document.body.style.overflow = 'auto';
 }
 

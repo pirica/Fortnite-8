@@ -21,7 +21,7 @@
 </section>
 
 <!-- Features Section -->
-<section class="container-fn" style="margin-top: -60px; position: relative; z-index: 10;">
+<section class="container-fn section-overlap">
     <div class="features-grid">
         
         <!-- Shop Card -->
@@ -68,12 +68,12 @@
 </section>
 
 <!-- Live Shop Preview -->
-<section class="container-fn" style="margin-top: 80px;">
-    <h2 style="text-align: center; margin-bottom: 40px;">
+<section class="container-fn section-spaced">
+    <h2 class="section-title-center">
         <span class="text-gradient">🔥 Destaques da Loja</span>
     </h2>
     
-    <div class="items-grid" style="max-width: 1000px; margin: 0 auto;">
+    <div class="items-grid content-wide">
         <?php if (!empty($featuredItems)): ?>
             <?php foreach ($featuredItems as $item): ?>
             <?php
@@ -96,11 +96,11 @@
             include __DIR__ . '/../partials/state-card.php';
             ?>
         <?php else: ?>
-            <div class="feature-card loading-shimmer" style="height: 220px; grid-column: 1/-1;"></div>
+            <div class="feature-card loading-shimmer loading-shimmer--block"></div>
         <?php endif; ?>
     </div>
     
-    <div style="text-align: center; margin-top: 40px;">
+    <div class="section-actions-center">
         <a href="<?= $baseUrl ?>/shop" class="btn-fn btn-fn-outline">Ver Loja Completa →</a>
     </div>
 </section>

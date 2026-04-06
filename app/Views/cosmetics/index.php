@@ -5,14 +5,14 @@
     </div>
     
     <!-- Search Bar -->
-    <form id="search-form" class="search-box" action="<?= $baseUrl ?>/cosmetics" method="GET" style="max-width: 500px; margin: 0 auto 40px;">
+    <form id="search-form" class="search-box search-box--narrow" action="<?= $baseUrl ?>/cosmetics" method="GET">
         <input type="text" name="query" id="search-input" placeholder="🔍 Buscar cosméticos..." 
                value="<?= htmlspecialchars($searchQuery) ?>">
         <button type="submit">Buscar</button>
     </form>
     
-    <div id="results-info" style="text-align: center; margin-bottom: 20px; display: none;">
-        <p style="color: var(--text-secondary);">
+    <div id="results-info" class="results-info" hidden>
+        <p class="results-info__text">
             Mostrando resultados para: <strong id="search-term"></strong>
         </p>
     </div>
@@ -22,48 +22,16 @@
     </div>
     
     <!-- Loading indicator -->
-    <div id="loading" style="text-align: center; padding: 40px; display: none;">
+    <div id="loading" class="status-panel" hidden>
         <div class="spinner"></div>
-        <p style="color: var(--text-secondary); margin-top: 15px;">Carregando cosméticos...</p>
+        <p class="status-panel__text status-panel__text--spaced">Carregando cosméticos...</p>
     </div>
     
     <!-- End message -->
-    <div id="end-message" style="text-align: center; padding: 40px; display: none;">
-        <p style="color: var(--text-secondary);">✅ Todos os cosméticos foram carregados!</p>
+    <div id="end-message" class="status-panel" hidden>
+        <p class="status-panel__text">✅ Todos os cosméticos foram carregados!</p>
     </div>
 </div>
-
-<style>
-.spinner {
-    width: 50px;
-    height: 50px;
-    border: 4px solid rgba(157, 78, 221, 0.2);
-    border-top-color: var(--fn-purple);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-    margin: 0 auto;
-}
-
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-@keyframes fadeInUp {
-    from {
-        opacity: 0;
-        transform: translateY(20px);
-    }
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
-
-.cosmetic-item {
-    animation: fadeInUp 0.5s ease forwards;
-    opacity: 0;
-}
-</style>
 
 <script>
 const popularSkins = <?= json_encode($popularSkins, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>;
@@ -84,7 +52,7 @@ async function loadCosmetics() {
     if (isLoading || !hasMore) return;
     
     isLoading = true;
-    loading.style.display = 'block';
+    loading.hidden = false;
     
     try {
         const response = await fetch(`${basePath}/cosmetics/api?query=${encodeURIComponent(currentQuery)}&page=${currentPage}`);
@@ -103,22 +71,19 @@ async function loadCosmetics() {
         }
         
         if (!hasMore) {
-            endMessage.style.display = 'block';
+            endMessage.hidden = false;
         }
     } catch (error) {
         const errorCard = document.createElement('div');
-        errorCard.className = 'feature-card';
-        errorCard.style.gridColumn = '1 / -1';
-        errorCard.style.textAlign = 'center';
-        errorCard.style.padding = '32px';
+        errorCard.className = 'feature-card state-inline-error';
         errorCard.innerHTML = `
             <h3>Falha ao carregar cosméticos</h3>
-            <p style="color: var(--text-secondary)">A API está instável no momento. Tente novamente em alguns segundos.</p>
+            <p class="status-panel__text">A API está instável no momento. Tente novamente em alguns segundos.</p>
         `;
         grid.appendChild(errorCard);
     }
     
-    loading.style.display = 'none';
+    loading.hidden = true;
     isLoading = false;
 }
 
@@ -129,12 +94,12 @@ function createCard(item, index) {
     const card = document.createElement('a');
     card.href = `${basePath}/cosmetics/${item.id}`;
     card.className = `item-card rarity-${rarity} cosmetic-item`;
-    card.style.animationDelay = `${index * 0.05}s`;
+    card.style.setProperty('--card-delay', `${index * 0.05}s`);
     card.innerHTML = `
         <img src="${imageUrl}" alt="${item.name}" loading="lazy" onerror="this.src='${basePath}/img/logo.png'">
         <div class="card-body">
             <h5 class="card-title">${item.name}</h5>
-            <p class="card-text" style="color: var(--text-secondary); font-size: 0.85rem;">
+            <p class="card-text cosmetic-item__meta">
                 ${item.type?.displayValue || ''}
             </p>
         </div>
@@ -152,7 +117,7 @@ window.addEventListener('scroll', () => {
 
 // Show results info if searching
 if (currentQuery) {
-    resultsInfo.style.display = 'block';
+    resultsInfo.hidden = false;
     searchTerm.textContent = currentQuery;
 }
 

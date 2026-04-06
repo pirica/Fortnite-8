@@ -6,12 +6,12 @@
     ?>
     
     <!-- Search Form -->
-    <form class="search-box" action="<?= $baseUrl ?>/player" method="GET" style="max-width: 600px; margin: 0 auto 40px;">
-        <div style="display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; width: 100%;">
+    <form class="search-box search-box--wide" action="<?= $baseUrl ?>/player" method="GET">
+        <div class="search-box__row">
             <input type="text" name="player" placeholder="🎮 Digite o nome do jogador..." 
                    value="<?= htmlspecialchars($playerName) ?>" 
-                   style="flex: 1; min-width: 250px;" required>
-            <select name="platform" style="padding: 12px 20px; border-radius: 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; cursor: pointer;">
+                   class="search-box__input" required>
+            <select name="platform" class="search-box__select">
                 <option value="epic" <?= $platform === 'epic' ? 'selected' : '' ?>>Epic Games</option>
                 <option value="psn" <?= $platform === 'psn' ? 'selected' : '' ?>>PlayStation</option>
                 <option value="xbl" <?= $platform === 'xbl' ? 'selected' : '' ?>>Xbox</option>
@@ -24,7 +24,7 @@
     <?php
     $icon = '😕';
     $title = 'Jogador não encontrado';
-    $message = htmlspecialchars($error) . '<br><span style="display:block; margin-top: 14px; color: var(--text-secondary); font-size: 0.9rem;">Verifique se o nome está correto e se o perfil é público.</span>';
+    $message = htmlspecialchars($error) . '<br><span class="search-help">Verifique se o nome está correto e se o perfil é público.</span>';
     $variant = 'error';
     $size = 'default';
     include __DIR__ . '/../partials/state-card.php';
@@ -33,22 +33,22 @@
     <?php elseif ($playerData): ?>
     
     <!-- Player Info -->
-    <div style="max-width: 1000px; margin: 0 auto;">
+    <div class="player-profile">
         <!-- Header Card -->
-        <div class="feature-card" style="padding: 30px; margin-bottom: 30px;">
-            <div style="display: flex; align-items: center; gap: 20px; flex-wrap: wrap;">
-                <div style="width: 80px; height: 80px; background: linear-gradient(135deg, var(--fn-purple), var(--fn-blue)); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 2rem;">
+        <div class="feature-card player-profile__card">
+            <div class="player-profile__header">
+                <div class="panel-stack__avatar">
                     🎮
                 </div>
-                <div style="flex: 1;">
-                    <h2 style="font-size: 2rem; margin-bottom: 5px;"><?= htmlspecialchars($playerData['account']['name'] ?? $playerName) ?></h2>
-                    <p style="color: var(--text-secondary);">
+                <div class="panel-stack__content">
+                    <h2 class="player-profile__title"><?= htmlspecialchars($playerData['account']['name'] ?? $playerName) ?></h2>
+                    <p class="player-profile__meta">
                         ID: <?= htmlspecialchars($playerData['account']['id'] ?? 'N/A') ?>
                     </p>
                 </div>
-                <div style="text-align: right;">
-                    <p style="color: var(--fn-yellow);">🏆 Level <?= $playerData['battlePass']['level'] ?? '0' ?></p>
-                    <p style="color: var(--text-secondary); font-size: 0.85rem;">Battle Pass</p>
+                <div class="player-profile__level">
+                    <p class="player-profile__level-value">🏆 Level <?= $playerData['battlePass']['level'] ?? '0' ?></p>
+                    <p class="player-profile__level-label">Battle Pass</p>
                 </div>
             </div>
         </div>
@@ -57,33 +57,33 @@
         <?php if (isset($playerData['stats']['all']['overall'])): 
             $overall = $playerData['stats']['all']['overall'];
         ?>
-        <h3 style="margin-bottom: 20px;">
+        <h3 class="player-profile__section-title">
             <span class="text-gradient">📊 Estatísticas Gerais</span>
         </h3>
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; margin-bottom: 40px;">
-            <div class="feature-card" style="padding: 20px; text-align: center;">
-                <p style="color: var(--text-secondary); font-size: 0.8rem;">Partidas</p>
-                <p style="font-size: 1.8rem; font-weight: bold; color: var(--fn-blue);"><?= number_format($overall['matches'] ?? 0) ?></p>
+        <div class="stat-grid stat-grid--overall player-profile__grid">
+            <div class="feature-card stat-card">
+                <p class="stat-card__label">Partidas</p>
+                <p class="stat-card__value stat-card__value--blue"><?= number_format($overall['matches'] ?? 0) ?></p>
             </div>
-            <div class="feature-card" style="padding: 20px; text-align: center;">
-                <p style="color: var(--text-secondary); font-size: 0.8rem;">Vitórias</p>
-                <p style="font-size: 1.8rem; font-weight: bold; color: var(--fn-green);"><?= number_format($overall['wins'] ?? 0) ?></p>
+            <div class="feature-card stat-card">
+                <p class="stat-card__label">Vitórias</p>
+                <p class="stat-card__value stat-card__value--green"><?= number_format($overall['wins'] ?? 0) ?></p>
             </div>
-            <div class="feature-card" style="padding: 20px; text-align: center;">
-                <p style="color: var(--text-secondary); font-size: 0.8rem;">Eliminações</p>
-                <p style="font-size: 1.8rem; font-weight: bold; color: var(--fn-orange);"><?= number_format($overall['kills'] ?? 0) ?></p>
+            <div class="feature-card stat-card">
+                <p class="stat-card__label">Eliminações</p>
+                <p class="stat-card__value stat-card__value--orange"><?= number_format($overall['kills'] ?? 0) ?></p>
             </div>
-            <div class="feature-card" style="padding: 20px; text-align: center;">
-                <p style="color: var(--text-secondary); font-size: 0.8rem;">Mortes</p>
-                <p style="font-size: 1.8rem; font-weight: bold; color: var(--fn-pink);"><?= number_format($overall['deaths'] ?? 0) ?></p>
+            <div class="feature-card stat-card">
+                <p class="stat-card__label">Mortes</p>
+                <p class="stat-card__value stat-card__value--pink"><?= number_format($overall['deaths'] ?? 0) ?></p>
             </div>
-            <div class="feature-card" style="padding: 20px; text-align: center;">
-                <p style="color: var(--text-secondary); font-size: 0.8rem;">K/D Ratio</p>
-                <p style="font-size: 1.8rem; font-weight: bold; color: var(--fn-purple);"><?= number_format($overall['kd'] ?? 0, 2) ?></p>
+            <div class="feature-card stat-card">
+                <p class="stat-card__label">K/D Ratio</p>
+                <p class="stat-card__value stat-card__value--purple"><?= number_format($overall['kd'] ?? 0, 2) ?></p>
             </div>
-            <div class="feature-card" style="padding: 20px; text-align: center;">
-                <p style="color: var(--text-secondary); font-size: 0.8rem;">Taxa de Vitória</p>
-                <p style="font-size: 1.8rem; font-weight: bold; color: var(--fn-yellow);"><?= number_format($overall['winRate'] ?? 0, 1) ?>%</p>
+            <div class="feature-card stat-card">
+                <p class="stat-card__label">Taxa de Vitória</p>
+                <p class="stat-card__value stat-card__value--yellow"><?= number_format($overall['winRate'] ?? 0, 1) ?>%</p>
             </div>
         </div>
         <?php endif; ?>
@@ -95,37 +95,37 @@
         $modeColors = ['solo' => 'var(--fn-blue)', 'duo' => 'var(--fn-green)', 'squad' => 'var(--fn-purple)'];
         ?>
         
-        <h3 style="margin-bottom: 20px;">
+        <h3 class="player-profile__section-title">
             <span class="text-gradient">🎮 Estatísticas por Modo</span>
         </h3>
         
-        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px;">
+        <div class="stat-grid stat-grid--mode">
             <?php foreach ($modes as $key => $label): 
                 $modeStats = $playerData['stats']['all'][$key] ?? null;
                 if (!$modeStats) continue;
             ?>
-            <div class="feature-card" style="padding: 25px; border-top: 3px solid <?= $modeColors[$key] ?>;">
-                <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 20px;">
-                    <span style="font-size: 1.5rem;"><?= $modeIcons[$key] ?></span>
-                    <h4 style="margin: 0; color: <?= $modeColors[$key] ?>;"><?= $label ?></h4>
+            <div class="feature-card stat-card stat-card--mode stat-card--mode-<?= $key ?>">
+                <div class="mode-header">
+                    <span class="mode-header__icon"><?= $modeIcons[$key] ?></span>
+                    <h4 class="mode-header__title mode-header__title--<?= $key === 'solo' ? 'blue' : ($key === 'duo' ? 'green' : 'purple') ?>"><?= $label ?></h4>
                 </div>
                 
-                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
+                <div class="mode-metrics">
                     <div>
-                        <p style="color: var(--text-secondary); font-size: 0.75rem;">Partidas</p>
-                        <p style="font-weight: bold;"><?= number_format($modeStats['matches'] ?? 0) ?></p>
+                        <p class="mode-metrics__label">Partidas</p>
+                        <p class="mode-metrics__value"><?= number_format($modeStats['matches'] ?? 0) ?></p>
                     </div>
                     <div>
-                        <p style="color: var(--text-secondary); font-size: 0.75rem;">Vitórias</p>
-                        <p style="font-weight: bold; color: var(--fn-green);"><?= number_format($modeStats['wins'] ?? 0) ?></p>
+                        <p class="mode-metrics__label">Vitórias</p>
+                        <p class="mode-metrics__value stat-card__value--green"><?= number_format($modeStats['wins'] ?? 0) ?></p>
                     </div>
                     <div>
-                        <p style="color: var(--text-secondary); font-size: 0.75rem;">K/D</p>
-                        <p style="font-weight: bold;"><?= number_format($modeStats['kd'] ?? 0, 2) ?></p>
+                        <p class="mode-metrics__label">K/D</p>
+                        <p class="mode-metrics__value"><?= number_format($modeStats['kd'] ?? 0, 2) ?></p>
                     </div>
                     <div>
-                        <p style="color: var(--text-secondary); font-size: 0.75rem;">Taxa Vitória</p>
-                        <p style="font-weight: bold;"><?= number_format($modeStats['winRate'] ?? 0, 1) ?>%</p>
+                        <p class="mode-metrics__label">Taxa Vitória</p>
+                        <p class="mode-metrics__value"><?= number_format($modeStats['winRate'] ?? 0, 1) ?>%</p>
                     </div>
                 </div>
             </div>
@@ -135,20 +135,20 @@
     
     <?php else: ?>
     <!-- Empty State -->
-    <div style="text-align: center; padding: 60px;">
-        <div style="font-size: 5rem; margin-bottom: 30px;">🎮</div>
-        <h3 style="margin-bottom: 15px;">Pesquise um jogador</h3>
-        <p style="color: var(--text-secondary); max-width: 400px; margin: 0 auto;">
+    <div class="empty-hero">
+        <div class="empty-hero__icon">🎮</div>
+        <h3 class="empty-hero__title">Pesquise um jogador</h3>
+        <p class="empty-hero__text">
             Digite o nome de usuário Epic Games, PlayStation ou Xbox para ver as estatísticas do jogador.
         </p>
         
         <!-- Popular Players -->
-        <div style="margin-top: 40px;">
-            <p style="color: var(--text-secondary); margin-bottom: 20px;">💡 Jogadores populares para testar:</p>
-            <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
-                <a href="<?= $baseUrl ?>/player?player=Ninja" class="btn-fn btn-fn-outline" style="padding: 8px 16px;">Ninja</a>
-                <a href="<?= $baseUrl ?>/player?player=Tfue" class="btn-fn btn-fn-outline" style="padding: 8px 16px;">Tfue</a>
-                <a href="<?= $baseUrl ?>/player?player=Bugha" class="btn-fn btn-fn-outline" style="padding: 8px 16px;">Bugha</a>
+        <div class="player-profile__popular">
+            <p class="player-profile__popular-label">💡 Jogadores populares para testar:</p>
+            <div class="player-profile__popular-links">
+                <a href="<?= $baseUrl ?>/player?player=Ninja" class="btn-fn btn-fn-outline btn-fn--compact">Ninja</a>
+                <a href="<?= $baseUrl ?>/player?player=Tfue" class="btn-fn btn-fn-outline btn-fn--compact">Tfue</a>
+                <a href="<?= $baseUrl ?>/player?player=Bugha" class="btn-fn btn-fn-outline btn-fn--compact">Bugha</a>
             </div>
         </div>
     </div>

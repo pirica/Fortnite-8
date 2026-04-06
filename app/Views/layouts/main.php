@@ -28,7 +28,7 @@
                 <img src="<?= $baseUrl ?>/img/logo.png" alt="Fortnite Hub">
             </a>
             <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon" style="filter: invert(1);"></span>
+                <span class="navbar-toggler-icon navbar-toggler-icon--light"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
                 <ul class="navbar-nav ml-auto">
@@ -72,8 +72,8 @@
     <!-- Footer -->
     <footer class="footer-fn">
         <p>Fortnite Hub © <?= date('Y') ?> - Projeto de Portfólio</p>
-        <p style="font-size: 0.8rem; margin-top: 10px;">
-            Este site não é afiliado à Epic Games. Todos os dados são fornecidos pela <a href="https://fortnite-api.com/" target="_blank" style="color: var(--fn-blue);">Fortnite-API.com</a>
+        <p class="footer-note">
+            Este site não é afiliado à Epic Games. Todos os dados são fornecidos pela <a href="https://fortnite-api.com/" target="_blank" rel="noreferrer">Fortnite-API.com</a>
         </p>
     </footer>
 

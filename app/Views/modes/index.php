@@ -7,28 +7,28 @@
     
     <!-- Category Filter -->
     <div class="toolbar">
-        <button class="btn-fn filter-btn active" onclick="filterPlaylists('all', this)">📋 Todos</button>
+        <button class="btn-fn filter-btn is-active" onclick="filterPlaylists('all', this)">📋 Todos</button>
         <button class="btn-fn btn-fn-outline filter-btn" onclick="filterPlaylists('br', this)">🎯 Battle Royale</button>
         <button class="btn-fn btn-fn-outline filter-btn" onclick="filterPlaylists('zerobuild', this)">🔨 Zero Build</button>
         <button class="btn-fn btn-fn-outline filter-btn" onclick="filterPlaylists('festival', this)">🎵 Festival</button>
         <button class="btn-fn btn-fn-outline filter-btn" onclick="filterPlaylists('racing', this)">🏎️ Rocket Racing</button>
     </div>
     
-    <div class="items-grid" id="playlists-grid" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));">
+    <div class="items-grid items-grid--playlists" id="playlists-grid">
         <?php foreach ($playlists as $index => $playlist): ?>
-        <div class="playlist-card" data-type="<?= $playlist['type'] ?>" style="animation-delay: <?= $index * 0.05 ?>s;">
-            <div class="item-card" style="border-left: 4px solid <?= $playlist['color'] ?>;">
-                <div class="card-body" style="padding: 25px;">
-                    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
-                        <span style="font-size: 2.5rem;"><?= $playlist['icon'] ?></span>
+        <div class="playlist-card" data-type="<?= $playlist['type'] ?>" style="--playlist-delay: <?= $index * 0.05 ?>s; --playlist-color: <?= htmlspecialchars((string) $playlist['color']) ?>;">
+            <div class="item-card playlist-card__item">
+                <div class="card-body playlist-card__body">
+                    <div class="playlist-card__header">
+                        <span class="playlist-card__icon"><?= $playlist['icon'] ?></span>
                         <div>
-                            <h4 style="margin: 0; color: <?= $playlist['color'] ?>;"><?= htmlspecialchars($playlist['name']) ?></h4>
-                            <span style="font-size: 0.75rem; color: var(--text-secondary); text-transform: uppercase;">
+                            <h4 class="playlist-card__title"><?= htmlspecialchars($playlist['name']) ?></h4>
+                            <span class="playlist-card__type">
                                 <?= $types[$playlist['type']] ?? 'Outro' ?>
                             </span>
                         </div>
                     </div>
-                    <p style="color: var(--text-secondary); font-size: 0.9rem; line-height: 1.5;">
+                    <p class="playlist-card__desc">
                         <?= htmlspecialchars($playlist['desc']) ?>
                     </p>
                 </div>
@@ -38,39 +38,13 @@
     </div>
     
     <!-- Stats -->
-    <div style="margin-top: 50px; text-align: center;">
-        <div class="feature-card" style="display: inline-block; padding: 30px 50px;">
-            <p style="color: var(--text-secondary); margin-bottom: 10px;">Total de modos principais</p>
-            <p style="font-size: 3rem; font-weight: bold; color: var(--fn-blue);"><?= count($playlists) ?></p>
+    <div class="modes-summary">
+        <div class="feature-card modes-summary__card">
+            <p class="modes-summary__label">Total de modos principais</p>
+            <p class="modes-summary__value"><?= count($playlists) ?></p>
         </div>
     </div>
 </div>
-
-<style>
-.playlist-card {
-    animation: fadeInUp 0.5s ease forwards;
-    opacity: 0;
-}
-
-@keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.playlist-card .item-card {
-    height: 100%;
-    transition: all 0.3s ease;
-}
-
-.playlist-card .item-card:hover {
-    transform: translateX(10px);
-    box-shadow: 0 10px 30px rgba(157, 78, 221, 0.3);
-}
-
-.filter-btn.active {
-    background: var(--fn-purple) !important;
-}
-</style>
 
 <script>
 function filterPlaylists(type, trigger) {
@@ -78,11 +52,11 @@ function filterPlaylists(type, trigger) {
     const buttons = document.querySelectorAll('.filter-btn');
     
     buttons.forEach(btn => {
-        btn.classList.remove('active');
+        btn.classList.remove('is-active');
         btn.classList.add('btn-fn-outline');
     });
     if (trigger) {
-        trigger.classList.add('active');
+        trigger.classList.add('is-active');
         trigger.classList.remove('btn-fn-outline');
     }
     

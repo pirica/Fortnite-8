@@ -17,14 +17,14 @@
     ?>
     <?php else: ?>
     
-    <div class="items-grid" style="grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));">
+    <div class="items-grid section-wide-grid">
         <?php foreach ($news as $index => $item): 
             $imageUrl = $item['image'] ?? '';
             $newsClasses = '';
             $newsTitle = $item['title'] ?? 'Sem título';
             $newsBody = htmlspecialchars((string) ($item['body'] ?? ''));
             if (!empty($item['adspace'])) {
-                $newsBody .= '<p style="color: var(--fn-yellow); font-size: 0.85rem; margin-top: 10px;">📢 ' . htmlspecialchars((string) $item['adspace']) . '</p>';
+                $newsBody .= '<p class="news-card__body--notice">📢 ' . htmlspecialchars((string) $item['adspace']) . '</p>';
             }
             $newsImageUrl = $imageUrl;
             $newsBadgeLeft = '';
@@ -37,19 +37,7 @@
     
     <?php endif; ?>
     
-    <div style="text-align: center; margin-top: 40px;">
+    <div class="section-actions-center">
         <a href="<?= $baseUrl ?>/news" class="btn-fn btn-fn-outline">← Ver todas as notícias</a>
     </div>
 </div>
-
-<style>
-.news-card {
-    animation: fadeInUp 0.5s ease forwards;
-    opacity: 0;
-}
-
-@keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-</style>

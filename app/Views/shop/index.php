@@ -6,7 +6,7 @@
     ?>
     
     <!-- Search Bar -->
-    <form class="search-box" action="<?= $baseUrl ?>/shop" method="GET" style="max-width: 500px; margin: 0 auto 40px;">
+    <form class="search-box search-box--narrow" action="<?= $baseUrl ?>/shop" method="GET">
         <input type="text" name="query" placeholder="🔍 Buscar na loja..." 
                value="<?= htmlspecialchars($searchQuery) ?>">
         <button type="submit">Buscar</button>
@@ -33,7 +33,7 @@
     <?php else: ?>
     
     <?php foreach ($sections as $sectionName => $items): ?>
-    <section style="margin-bottom: 50px;">
+    <section class="section-block">
         <h2 class="section-head">
             <span class="text-gradient"><?= htmlspecialchars($sectionName) ?></span>
             <span class="chip">
@@ -53,17 +53,17 @@
             $bodyHtml = '';
 
             if (!empty($item['type'])) {
-                $bodyHtml .= '<p style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 8px;">' . htmlspecialchars((string) $item['type']) . '</p>';
+                $bodyHtml .= '<p class="item-meta-type">' . htmlspecialchars((string) $item['type']) . '</p>';
             }
 
             $bodyHtml .= '<p class="card-text">';
             if ((float) $item['regularPrice'] > (float) $item['price']) {
-                $bodyHtml .= '<span style="text-decoration: line-through; color: var(--text-secondary); margin-right: 8px;">' . number_format((float) $item['regularPrice'], 0, ',', '.') . '</span>';
+                $bodyHtml .= '<span class="price-old">' . number_format((float) $item['regularPrice'], 0, ',', '.') . '</span>';
             }
             $bodyHtml .= '💰 ' . number_format((float) $item['price'], 0, ',', '.') . ' V-Bucks</p>';
 
             if (!empty($item['giftable'])) {
-                $bodyHtml .= '<span style="font-size: 0.75rem; color: var(--fn-green);">🎁 Presenteável</span>';
+                $bodyHtml .= '<span class="giftable-label">🎁 Presenteável</span>';
             }
 
             $onErrorFallback = "this.src='" . $baseUrl . "/img/logo.png'";
@@ -77,8 +77,3 @@
     <?php endif; ?>
 </div>
 
-<style>
-.item-card {
-    position: relative;
-}
-</style>

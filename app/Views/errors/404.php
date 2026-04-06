@@ -1,4 +1,4 @@
-<div class="page-container container-fn" style="text-align: center; padding-top: 150px;">
+<div class="page-container container-fn page-layout-centered page-shell">
     <?php
     $icon = '🔍';
     $title = '404';

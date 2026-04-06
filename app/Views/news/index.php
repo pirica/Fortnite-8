@@ -7,13 +7,13 @@
     
     <!-- Tabs -->
     <div class="toolbar">
-        <button class="btn-fn tab-btn active" onclick="showTab('all', this)">📋 Todas</button>
+        <button class="btn-fn tab-btn is-active" onclick="showTab('all', this)">📋 Todas</button>
         <button class="btn-fn btn-fn-outline tab-btn" onclick="showTab('br', this)">🎮 Battle Royale</button>
         <button class="btn-fn btn-fn-outline tab-btn" onclick="showTab('stw', this)">⚔️ Salve o Mundo</button>
     </div>
     
     <!-- BR News -->
-    <div id="tab-all" class="tab-content">
+    <div id="tab-all" class="tab-content is-active">
         <?php if (!empty($apiError)): ?>
         <?php
         $icon = '🛰️';
@@ -24,7 +24,7 @@
         include __DIR__ . '/../partials/state-card.php';
         ?>
         <?php else: ?>
-        <div class="items-grid" style="grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));">
+        <div class="items-grid section-wide-grid">
             <?php 
             $allNews = array_merge(
                 array_map(fn($n) => array_merge($n, ['source' => 'br']), $brNews),
@@ -39,8 +39,8 @@
                 $newsTitle = $news['title'] ?? 'Sem título';
                 $newsBody = htmlspecialchars(substr((string) ($news['body'] ?? ''), 0, 120)) . '...';
                 $newsImageUrl = $imageUrl;
-                $newsBadgeLeft = '<span style="background: ' . htmlspecialchars($news['source'] === 'br' ? 'var(--fn-blue)' : 'var(--fn-orange)') . '">' . ($news['source'] === 'br' ? '🎮 BR' : '⚔️ STW') . '</span>';
-                $newsBadgeRight = $priority >= 10 ? '<span style="background: var(--fn-yellow); color: #000; font-weight: bold;">⭐ DESTAQUE</span>' : '';
+                $newsBadgeLeft = '<span class="news-badge--source ' . htmlspecialchars($news['source'] === 'br' ? 'news-badge--br' : 'news-badge--stw') . '">' . ($news['source'] === 'br' ? '🎮 BR' : '⚔️ STW') . '</span>';
+                $newsBadgeRight = $priority >= 10 ? '<span class="news-badge--featured">⭐ DESTAQUE</span>' : '';
                 $newsDelay = $index * 0.05 . 's';
                 include __DIR__ . '/../partials/news-card.php';
             ?>
@@ -49,8 +49,8 @@
         <?php endif; ?>
     </div>
     
-    <div id="tab-br" class="tab-content" style="display: none;">
-        <div class="items-grid" style="grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));">
+    <div id="tab-br" class="tab-content" hidden>
+        <div class="items-grid section-wide-grid">
             <?php foreach ($brNews as $index => $news): 
                 $imageUrl = $news['tileImage'] ?? $news['image'] ?? '';
                 $newsTitle = $news['title'] ?? 'Sem título';
@@ -66,21 +66,21 @@
         </div>
     </div>
     
-    <div id="tab-stw" class="tab-content" style="display: none;">
+    <div id="tab-stw" class="tab-content" hidden>
         <?php if (empty($stwNews)): ?>
-        <div style="text-align: center; padding: 60px;">
-            <span style="font-size: 4rem;">⚔️</span>
-            <h3 style="margin: 20px 0;">Nenhuma notícia de Salve o Mundo</h3>
-            <p style="color: var(--text-secondary);">Não há notícias disponíveis no momento.</p>
+        <div class="tab-content__empty">
+            <span class="tab-content__empty-icon">⚔️</span>
+            <h3 class="tab-content__empty-title">Nenhuma notícia de Salve o Mundo</h3>
+            <p class="tab-content__empty-text">Não há notícias disponíveis no momento.</p>
         </div>
         <?php else: ?>
-        <div class="items-grid" style="grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));">
+        <div class="items-grid section-wide-grid">
             <?php foreach ($stwNews as $index => $news): 
                 $imageUrl = $news['image'] ?? '';
                 $newsTitle = $news['title'] ?? 'Sem título';
                 $newsBody = htmlspecialchars((string) ($news['body'] ?? ''));
                 if (!empty($news['adspace'])) {
-                    $newsBody .= '<p style="color: var(--fn-yellow); font-size: 0.85rem; margin-top: 10px;">📢 ' . htmlspecialchars((string) $news['adspace']) . '</p>';
+                    $newsBody .= '<p class="news-card__body--notice">📢 ' . htmlspecialchars((string) $news['adspace']) . '</p>';
                 }
                 $newsImageUrl = $imageUrl;
                 $newsBadgeLeft = '';
@@ -95,34 +95,19 @@
     </div>
 </div>
 
-<style>
-.news-card {
-    position: relative;
-    animation: fadeInUp 0.5s ease forwards;
-    opacity: 0;
-}
-
-@keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-.tab-btn.active {
-    background: var(--fn-purple) !important;
-}
-</style>
-
 <script>
 function showTab(tab, trigger) {
-    document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.tab-content').forEach(el => el.hidden = true);
     document.querySelectorAll('.tab-btn').forEach(el => {
-        el.classList.remove('active');
+        el.classList.remove('is-active');
         el.classList.add('btn-fn-outline');
     });
     
-    document.getElementById('tab-' + tab).style.display = 'block';
+    const target = document.getElementById('tab-' + tab);
+    target.hidden = false;
+    target.classList.add('is-active');
     if (trigger) {
-        trigger.classList.add('active');
+        trigger.classList.add('is-active');
         trigger.classList.remove('btn-fn-outline');
     }
 }

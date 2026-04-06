@@ -10,7 +10,7 @@ $newsBadgeLeft = $newsBadgeLeft ?? '';
 $newsBadgeRight = $newsBadgeRight ?? '';
 $newsDelay = $newsDelay ?? '0s';
 ?>
-<div class="<?= htmlspecialchars($newsClasses) ?>" style="animation-delay: <?= htmlspecialchars((string) $newsDelay) ?>;">
+<div class="<?= htmlspecialchars($newsClasses) ?>" style="--news-delay: <?= htmlspecialchars((string) $newsDelay) ?>;">
     <?php if (!empty($newsBadgeRight)): ?>
     <span class="news-card__badge news-card__badge--right"><?= $newsBadgeRight ?></span>
     <?php endif; ?>

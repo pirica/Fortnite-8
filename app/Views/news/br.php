@@ -19,19 +19,19 @@
     
     <!-- Featured News (first item) -->
     <?php $featured = array_shift($news); ?>
-    <div class="feature-card" style="margin-bottom: 50px; overflow: hidden;">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; min-height: 300px;">
+    <div class="feature-card featured-panel">
+        <div class="content-grid content-grid--two featured-panel__frame">
             <?php if (!empty($featured['image'])): ?>
             <img src="<?= htmlspecialchars($featured['image']) ?>" 
                  alt="<?= htmlspecialchars($featured['title'] ?? '') ?>"
-                 style="width: 100%; height: 100%; object-fit: cover;">
+                 class="media-cover">
             <?php endif; ?>
-            <div style="padding: 30px; display: flex; flex-direction: column; justify-content: center;">
-                <span style="background: var(--fn-yellow); color: #000; padding: 5px 12px; border-radius: 4px; font-size: 0.85rem; font-weight: bold; display: inline-block; width: fit-content; margin-bottom: 15px;">
+            <div class="featured-panel__content">
+                <span class="featured-badge">
                     🔥 DESTAQUE
                 </span>
-                <h2 style="margin-bottom: 15px;"><?= htmlspecialchars($featured['title'] ?? 'Sem título') ?></h2>
-                <p style="color: var(--text-secondary); line-height: 1.6;">
+                <h2 class="featured-panel__title"><?= htmlspecialchars($featured['title'] ?? 'Sem título') ?></h2>
+                <p class="featured-panel__text">
                     <?= htmlspecialchars($featured['body'] ?? '') ?>
                 </p>
             </div>
@@ -39,7 +39,7 @@
     </div>
     
     <!-- Other News -->
-    <div class="items-grid" style="grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));">
+    <div class="items-grid section-wide-grid">
         <?php foreach ($news as $index => $item): 
             $imageUrl = $item['tileImage'] ?? $item['image'] ?? '';
             $priority = $item['sortingPriority'] ?? 0;
@@ -48,7 +48,7 @@
             $newsBody = htmlspecialchars((string) ($item['body'] ?? ''));
             $newsImageUrl = $imageUrl;
             $newsBadgeLeft = '';
-            $newsBadgeRight = $priority >= 5 ? '<span style="background: var(--fn-orange);">🔥 HOT</span>' : '';
+            $newsBadgeRight = $priority >= 5 ? '<span class="news-badge--hot">🔥 HOT</span>' : '';
             $newsDelay = $index * 0.05 . 's';
             include __DIR__ . '/../partials/news-card.php';
         ?>
@@ -57,26 +57,7 @@
     
     <?php endif; ?>
     
-    <div style="text-align: center; margin-top: 40px;">
+    <div class="section-actions-center">
         <a href="<?= $baseUrl ?>/news" class="btn-fn btn-fn-outline">← Ver todas as notícias</a>
     </div>
 </div>
-
-<style>
-.news-card {
-    position: relative;
-    animation: fadeInUp 0.5s ease forwards;
-    opacity: 0;
-}
-
-@keyframes fadeInUp {
-    from { opacity: 0; transform: translateY(20px); }
-    to { opacity: 1; transform: translateY(0); }
-}
-
-@media (max-width: 768px) {
-    .feature-card > div {
-        grid-template-columns: 1fr !important;
-    }
-}
-</style>
