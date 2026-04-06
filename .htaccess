@@ -3,6 +3,6 @@
 
 RewriteEngine On
 
-# If not already in public directory, redirect there
-RewriteCond %{REQUEST_URI} !^/Fortnite/public/
-RewriteRule ^(.*)$ public/$1 [L,R=301]
+# If not already in public directory, route internally to it
+RewriteCond %{REQUEST_URI} !^/public/
+RewriteRule ^(.*)$ public/$1 [L]

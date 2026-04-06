@@ -7,8 +7,7 @@
         </p>
         
         <!-- Search Box -->
-        <?php $base = '/Fortnite/public'; ?>
-        <form class="search-box" action="<?= $base ?>/cosmetics" method="GET">
+        <form class="search-box" action="<?= $baseUrl ?>/cosmetics" method="GET">
             <input type="text" name="query" placeholder="🔍 Buscar cosméticos, skins, emotes...">
             <button type="submit">Buscar</button>
         </form>
@@ -30,7 +29,7 @@
             <div class="feature-icon">🛒</div>
             <h3>Loja Diária</h3>
             <p>Confira todos os itens disponíveis na loja de hoje em tempo real.</p>
-            <a href="<?= $base ?>/shop" class="btn-fn">Ver Loja</a>
+            <a href="<?= $baseUrl ?>/shop" class="btn-fn">Ver Loja</a>
         </div>
         
         <!-- News Card -->
@@ -38,7 +37,7 @@
             <div class="feature-icon">📰</div>
             <h3>Últimas Notícias</h3>
             <p>Fique por dentro das atualizações, eventos e patch notes.</p>
-            <a href="<?= $base ?>/news" class="btn-fn">Ver Notícias</a>
+            <a href="<?= $baseUrl ?>/news" class="btn-fn">Ver Notícias</a>
         </div>
         
         <!-- Cosmetics Card -->
@@ -46,7 +45,7 @@
             <div class="feature-icon">✨</div>
             <h3>Cosméticos</h3>
             <p>Explore todos os cosméticos disponíveis no jogo.</p>
-            <a href="<?= $base ?>/cosmetics" class="btn-fn">Explorar</a>
+            <a href="<?= $baseUrl ?>/cosmetics" class="btn-fn">Explorar</a>
         </div>
         
         <!-- Map Card -->
@@ -54,7 +53,7 @@
             <div class="feature-icon">🗺️</div>
             <h3>Mapa Atual</h3>
             <p>Veja o mapa atual do Battle Royale com todos os POIs.</p>
-            <a href="<?= $base ?>/map" class="btn-fn">Ver Mapa</a>
+            <a href="<?= $baseUrl ?>/map" class="btn-fn">Ver Mapa</a>
         </div>
         
     </div>
@@ -72,19 +71,24 @@
             <div class="item-card rarity-legendary">
                 <img src="<?= htmlspecialchars($item['image']) ?>" 
                      alt="<?= htmlspecialchars($item['name']) ?>" 
-                     onerror="this.src='<?= $base ?>/img/logo.png'">
+                     onerror="this.src='<?= $baseUrl ?>/img/logo.png'">
                 <div class="card-body">
                     <h5 class="card-title"><?= htmlspecialchars($item['name']) ?></h5>
                     <p class="card-text">💰 <?= number_format($item['price'], 0, ',', '.') ?> V-Bucks</p>
                 </div>
             </div>
             <?php endforeach; ?>
+        <?php elseif (!empty($apiError)): ?>
+            <div class="state-card" style="grid-column: 1/-1;">
+                <h3>Não foi possível carregar os destaques</h3>
+                <p><?= htmlspecialchars($apiError) ?></p>
+            </div>
         <?php else: ?>
-            <p style="text-align: center; grid-column: 1/-1;">Carregando itens da loja...</p>
+            <div class="feature-card loading-shimmer" style="height: 220px; grid-column: 1/-1;"></div>
         <?php endif; ?>
     </div>
     
     <div style="text-align: center; margin-top: 40px;">
-        <a href="<?= $base ?>/shop" class="btn-fn btn-fn-outline">Ver Loja Completa →</a>
+        <a href="<?= $baseUrl ?>/shop" class="btn-fn btn-fn-outline">Ver Loja Completa →</a>
     </div>
 </section>

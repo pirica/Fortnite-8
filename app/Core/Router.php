@@ -59,8 +59,8 @@ class Router
      */
     public function dispatch(): void
     {
-        $requestMethod = $_SERVER['REQUEST_METHOD'];
-        $requestUri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+        $requestMethod = (string) ($_SERVER['REQUEST_METHOD'] ?? 'GET');
+        $requestUri = (string) parse_url((string) ($_SERVER['REQUEST_URI'] ?? '/'), PHP_URL_PATH);
         
         // Remove base path from URI
         if ($this->basePath && strpos($requestUri, $this->basePath) === 0) {
@@ -69,13 +69,31 @@ class Router
         
         $requestUri = $requestUri ?: '/';
 
+        $pathMatched = false;
+        $allowedMethods = [];
+
         foreach ($this->routes as $route) {
             $params = $this->matchRoute($route['path'], $requestUri);
-            
-            if ($params !== false && $route['httpMethod'] === $requestMethod) {
+
+            if ($params === false) {
+                continue;
+            }
+
+            if ($route['httpMethod'] !== $requestMethod) {
+                $pathMatched = true;
+                $allowedMethods[] = $route['httpMethod'];
+                continue;
+            }
+
+            if ($params !== false) {
                 $this->callController($route['controller'], $route['method'], $params);
                 return;
             }
+        }
+
+        if ($pathMatched) {
+            $this->handleMethodNotAllowed($allowedMethods);
+            return;
         }
 
         // No route found - 404
@@ -90,7 +108,7 @@ class Router
     private function matchRoute(string $routePath, string $requestUri)
     {
         // Convert route pattern to regex
-        $pattern = preg_replace('/\{([a-zA-Z]+)\}/', '(?P<$1>[^/]+)', $routePath);
+        $pattern = preg_replace('/\{([a-zA-Z][a-zA-Z0-9_]*)\}/', '(?P<$1>[^/]+)', $routePath);
         $pattern = '#^' . $pattern . '$#';
 
         if (preg_match($pattern, $requestUri, $matches)) {
@@ -127,11 +145,22 @@ class Router
     private function handleNotFound(): void
     {
         http_response_code(404);
-        
+        $baseUrl = Config::baseUrl();
+
         if (file_exists(__DIR__ . '/../Views/errors/404.php')) {
             include __DIR__ . '/../Views/errors/404.php';
         } else {
             echo '<h1>404 - Page Not Found</h1>';
         }
+    }
+
+    /**
+     * @param array<int, string> $allowedMethods
+     */
+    private function handleMethodNotAllowed(array $allowedMethods): void
+    {
+        http_response_code(405);
+        header('Allow: ' . implode(', ', array_values(array_unique($allowedMethods))));
+        echo '<h1>405 - Method Not Allowed</h1>';
     }
 }

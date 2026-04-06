@@ -1,339 +1,224 @@
-<div align="center">
+# Fortnite Hub
 
-# 🎮 FORTNITE HUB
+Portal em PHP para acompanhar informações do Fortnite com foco em loja, cosméticos, notícias, mapa, modos e busca de jogador.
 
-### Portal de Informações do Fortnite em Tempo Real
+Projeto de portfólio com arquitetura MVC artesanal (sem framework pesado), refinado para execução em ambientes locais e Docker.
 
-[![PHP](https://img.shields.io/badge/PHP-8.0+-777BB4?style=for-the-badge&logo=php&logoColor=white)](https://php.net)
-[![MVC](https://img.shields.io/badge/Architecture-MVC-blue?style=for-the-badge)](https://en.wikipedia.org/wiki/Model%E2%80%93view%E2%80%93controller)
-[![PSR-4](https://img.shields.io/badge/Autoload-PSR--4-green?style=for-the-badge)](https://www.php-fig.org/psr/psr-4/)
-[![Docker](https://img.shields.io/badge/Docker-Ready-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://docker.com)
-[![PWA](https://img.shields.io/badge/PWA-Enabled-5A0FC8?style=for-the-badge&logo=pwa&logoColor=white)](https://web.dev/progressive-web-apps/)
+## Visão Geral
 
-<p align="center">
-  <b>Um portal moderno e responsivo para visualizar dados do Fortnite em tempo real, incluindo loja diária, cosméticos, notícias e estatísticas de jogadores.</b>
-</p>
+O Fortnite Hub foi construído para demonstrar:
 
-</div>
+- organização de código em MVC manual
+- consumo de API externa com cache
+- roteamento próprio
+- renderização server-side com PHP
+- base visual moderna com identidade gamer
+- cobertura unitária inicial com PHPUnit
 
----
+## Stack Real
 
-## 📸 Screenshots
+- PHP 8.1+
+- HTML + CSS + JavaScript
+- MVC artesanal
+- Composer (autoload + scripts)
+- PHPUnit
+- Bootstrap 4.5 (layout/base components)
+- Docker + Apache (opcional)
 
-<div align="center">
+## Funcionalidades Implementadas
 
-### 🏠 Página Inicial
-![Home Page](docs/screenshots/home.png)
+- Home com destaques da loja
+- Loja diária com busca por texto
+- Catálogo de cosméticos com carregamento incremental
+- Detalhes de cosmético por ID
+- Notícias gerais, BR e STW
+- Mapa atual com alternância de visualização (com/sem POIs)
+- Página de modos de jogo (catálogo curado local)
+- Busca de estatísticas de jogador por plataforma
+- Páginas de erro 404/500 customizadas
+- Cache local em arquivo para respostas da API
+- Manifest + Service Worker para comportamento PWA básico
 
-### 🛒 Loja Diária
-![Shop Page](docs/screenshots/shop.png)
+## Arquitetura Atual
 
-### ✨ Catálogo de Cosméticos
-![Cosmetics Page](docs/screenshots/cosmetics.png)
+### Fluxo principal
 
-### 📰 Notícias
-![News Page](docs/screenshots/news.png)
+1. Requisição entra por public/index.php
+2. bootstrap/app.php inicializa ambiente, config, headers e router
+3. config/routes.php registra rotas
+4. Router resolve controller/método
+5. Controller usa Model/Service para montar view model
+6. View é renderizada no layout principal
 
-</div>
+### Camadas
 
----
+- app/Core: base de infraestrutura (Config, Env, Router, Controller, Cache, HTTP)
+- app/Services: clientes de integração externa
+- app/Models: interface legada/compatível para consumo pelos controllers
+- app/Controllers: orquestração da requisição
+- app/Views: templates por feature
+- config/routes.php: definição central de rotas
+- bootstrap/app.php: inicialização da aplicação
 
-## ✨ Funcionalidades
+## Estrutura de Pastas
 
-| Funcionalidade | Descrição |
-|----------------|-----------|
-| 🏠 **Home** | Dashboard com preview dos itens da loja |
-| 🛒 **Loja Diária** | Todos os itens disponíveis hoje com busca e filtros |
-| ✨ **Cosméticos** | Catálogo completo com scroll infinito e detalhes |
-| 📰 **Notícias** | Últimas notícias de Battle Royale e Save the World |
-| 🗺️ **Mapa** | Mapa atual do jogo com POIs interativos |
-| 🎮 **Modos de Jogo** | Lista de todos os modos disponíveis |
-| 🔍 **Estatísticas** | Busca de estatísticas de qualquer jogador |
-| 📱 **PWA** | Instalável como aplicativo no celular |
-
----
-
-## 🏗️ Arquitetura
-
-O projeto segue a arquitetura **MVC (Model-View-Controller)** com padrões modernos PHP:
-
-```
+```text
 Fortnite/
-├── app/                        # Código da aplicação
-│   ├── Controllers/            # 7 Controllers (Home, Shop, Cosmetics, etc.)
-│   ├── Models/                 # FortniteAPI Model com cache
-│   ├── Views/                  # Templates PHP organizados
-│   │   ├── layouts/            # Layout principal
-│   │   ├── home/, shop/...     # Views por funcionalidade
-│   │   └── errors/             # Páginas 404/500
-│   └── Core/                   # Router, Controller base, Cache
-├── public/                     # Arquivos públicos (DocumentRoot)
-│   ├── index.php               # Front Controller
-│   ├── css/                    # Estilos
-│   ├── img/                    # Imagens
-│   └── sw.js                   # Service Worker (PWA)
-├── tests/                      # Testes PHPUnit
-├── docker/                     # Configuração Docker
-├── cache/                      # Cache de API
-└── docs/                       # Documentação e screenshots
+├── app/
+│   ├── Controllers/
+│   ├── Core/
+│   ├── Models/
+│   ├── Services/
+│   └── Views/
+├── bootstrap/
+│   └── app.php
+├── config/
+│   └── routes.php
+├── public/
+│   ├── index.php
+│   ├── autoload.php
+│   ├── css/
+│   ├── img/
+│   ├── manifest.json
+│   └── sw.js
+├── tests/
+│   ├── Support/
+│   └── Unit/
+├── docker/
+├── cache/
+├── composer.json
+├── docker-compose.yml
+└── phpunit.xml
 ```
 
-### Fluxo de Requisição
+## Configuração de Ambiente
 
-```mermaid
-graph LR
-    A[Requisição] --> B[public/index.php]
-    B --> C[Router]
-    C --> D[Controller]
-    D --> E[Model/API]
-    E --> F[Cache]
-    D --> G[View]
-    G --> H[Layout]
-    H --> I[Resposta HTML]
-```
-
----
-
-## 🚀 Quick Start
-
-### Opção 1: XAMPP (Recomendado para Windows)
+Crie seu arquivo .env a partir do exemplo:
 
 ```bash
-# Clone o repositório para a pasta htdocs
-git clone https://github.com/AndersonC96/fortnite-hub.git C:/xampp/htdocs/Fortnite
-
-# Configure o ambiente
-cd C:/xampp/htdocs/Fortnite
-copy .env.example .env
-
-# Edite o .env com sua API key
-# FORTNITE_API_KEY=sua_api_key_aqui
-
-# Acesse no navegador
-# http://localhost/Fortnite/public/
-```
-
-### Opção 2: Docker
-
-```bash
-# Clone e entre no diretório
-git clone https://github.com/AndersonC96/fortnite-hub.git
-cd fortnite-hub
-
-# Configure variáveis de ambiente
 cp .env.example .env
-# Edite .env com sua FORTNITE_API_KEY
-
-# Inicie com Docker Compose
-docker-compose up -d
-
-# Acesse
-# http://localhost:8080/
 ```
 
-### Opção 3: PHP Built-in Server
+Variáveis principais:
+
+- FORTNITE_API_KEY: chave da API
+- FORTNITE_API_URL: URL base da API Fortnite
+- APP_ENV: development|production
+- APP_DEBUG: true|false
+- APP_BASE_URL: opcional, sobrescreve autodetecção de base URL
+- CACHE_ENABLED: habilita/desabilita cache local
+- CACHE_TTL: TTL padrão do cache (segundos)
+
+## Como Rodar Localmente
+
+### Opção 1: PHP built-in server
 
 ```bash
-# Com Composer instalado
 composer install
 composer start
-
-# Acesse
-# http://localhost:8000/
 ```
 
----
+Acesse: http://localhost:8000
 
-## ⚙️ Configuração
+### Opção 2: XAMPP/Apache
 
-### Variáveis de Ambiente (.env)
+- configure o DocumentRoot para a pasta public
+- ou mantenha a raiz do projeto e use os arquivos de rewrite incluídos
 
-```env
-# API Configuration
-FORTNITE_API_KEY=sua_api_key_aqui
-FORTNITE_API_URL=https://fortnite-api.com/v2/
+Exemplo comum:
 
-# Application
-APP_ENV=development
-APP_DEBUG=true
+- projeto em C:/xampp/htdocs/Fortnite
+- acesso via http://localhost/Fortnite/public
 
-# Cache
-CACHE_ENABLED=true
-CACHE_TTL=300
-```
-
-### Obter API Key
-
-1. Acesse [fortnite-api.com](https://fortnite-api.com/)
-2. Crie uma conta gratuita
-3. Copie sua API Key
-4. Cole no arquivo `.env`
-
----
-
-## 🛣️ Rotas
-
-| Método | Rota | Descrição |
-|--------|------|-----------|
-| GET | `/` | Página inicial |
-| GET | `/shop` | Loja do dia |
-| GET | `/cosmetics` | Lista de cosméticos |
-| GET | `/cosmetics/{id}` | Detalhes do cosmético |
-| GET | `/cosmetics/api` | API para scroll infinito |
-| GET | `/news` | Todas as notícias |
-| GET | `/news/br` | Notícias Battle Royale |
-| GET | `/news/stw` | Notícias Save the World |
-| GET | `/map` | Mapa do jogo |
-| GET | `/modes` | Modos de jogo |
-| GET | `/player` | Buscar jogador |
-
----
-
-## 🧪 Testes
+### Opção 3: Docker
 
 ```bash
-# Instalar dependências de desenvolvimento
-composer install
+docker-compose up -d
+```
 
-# Executar todos os testes
+Acesse: http://localhost:8080
+
+## Testes e Qualidade
+
+Executar testes:
+
+```bash
 composer test
+```
 
-# Executar com cobertura de código
+Cobertura HTML:
+
+```bash
 composer test:coverage
 ```
 
-### Estrutura de Testes
-
-```
-tests/
-├── bootstrap.php           # Configuração inicial
-└── Unit/
-    ├── RouterTest.php      # Testes do Router
-    ├── CacheTest.php       # Testes do Cache
-    └── FortniteAPITest.php # Testes da API
-```
-
----
-
-## 📚 Padrões PHP
-
-| Padrão | Implementação |
-|--------|---------------|
-| **PSR-4** | Autoloading com namespace `FortniteHub\` |
-| **PSR-12** | Coding style com `declare(strict_types=1)` |
-| **Type Hints** | Parâmetros e retornos tipados |
-| **PHPDoc** | Documentação completa de métodos |
-
----
-
-## 🐳 Docker
-
-### Build Manual
+Lint de estilo:
 
 ```bash
-docker build -t fortnite-hub .
-docker run -p 8080:80 -e FORTNITE_API_KEY=sua_key fortnite-hub
+composer lint
 ```
 
-### Docker Compose
+Observações:
+
+- os testes existentes cobrem Router, Cache e contrato básico da camada de API
+- testes de integração real com API externa não estão completos nesta versão
+
+## Segurança e Robustez (implementado)
+
+- sanitização de saída nas views com htmlspecialchars
+- headers básicos enviados no bootstrap (nosniff, frame options, referrer policy, permissions policy)
+- validação básica de parâmetros críticos (ex.: ID de cosmético, plataforma)
+- tratamento de erro com fallback 404/500
+- distinção de falhas na comunicação externa (rede/http/payload/API)
+
+## PWA, CI/CD e Deploy: Estado Real
+
+### PWA
+
+- implementado: manifest, service worker e cache básico de assets
+- não implementado: estratégia offline completa para dados dinâmicos
+
+### CI
+
+- workflow de CI presente em .github/workflows/ci.yml
+- inclui lint, testes e etapas de build/security
+- uso efetivo depende da configuração de secrets do repositório
+
+### Deploy
+
+- não há pipeline de deploy produtivo pronto para uso imediato
+- existe base para evolução no workflow
+
+## APIs Utilizadas
+
+- Fortnite-API.com
+  - loja, cosméticos, notícias e estatísticas
+- FortniteAPI.io (imagem de mapa)
+  - render de mapa atual via URL de mídia
+
+## Limitações Atuais
+
+- página de modos usa catálogo local curado (não totalmente API-driven)
+- mapa usa imagem externa (sem engine de mapa interativo própria)
+- parte dos estados avançados de UX ainda pode evoluir (ex.: skeletons em todas as telas)
+- cobertura de testes ainda é enxuta para regras de negócio mais profundas
+
+## Roadmap
+
+- aumentar cobertura de testes para controllers e fluxo de erro de views
+- evoluir componente de estados reutilizáveis (loading/empty/error) para todas as páginas
+- melhorar filtros e paginação na loja
+- ampliar observabilidade (logs estruturados)
+- maturar estratégia de deploy contínuo
+
+## Repositório
 
 ```bash
-docker-compose up -d      # Iniciar
-docker-compose down       # Parar
-docker-compose logs -f    # Ver logs
+git clone https://github.com/AndersonCav/Fortnite.git
 ```
 
----
+## Nota Legal
 
-## 🔄 CI/CD
+Este projeto não é afiliado à Epic Games. Fortnite é marca registrada de seus respectivos proprietários.
 
-O projeto inclui GitHub Actions com:
-
-- ✅ **Lint**: Verificação de sintaxe PHP
-- ✅ **Tests**: Testes automatizados PHPUnit
-- ✅ **Security**: Scan de vulnerabilidades com Trivy
-- ✅ **Build**: Build de imagem Docker
-- ✅ **Deploy**: Deploy automático (configurável)
-
----
-
-## 📱 PWA
-
-O Fortnite Hub é um Progressive Web App instalável:
-
-- ✅ **Instalável** em dispositivos móveis
-- ✅ **Funciona offline** (cache de assets)
-- ✅ **Ícones personalizados** e splash screen
-- ✅ **Push notifications** (preparado)
-
----
-
-## 🛡️ Segurança
-
-| Medida | Descrição |
-|--------|-----------|
-| **API Key** | Armazenada em variável de ambiente |
-| **XSS** | Sanitização com `htmlspecialchars()` |
-| **Headers** | X-Frame-Options, X-XSS-Protection |
-| **HTTPS** | Pronto para produção |
-| **.gitignore** | Proteção de arquivos sensíveis |
-
----
-
-## 🎨 Design
-
-O design segue a estética do Fortnite:
-
-- **Tema**: Dark mode com gradientes neon
-- **Cores**: Purple (#9d4edd), Blue (#00f0ff), Pink (#ff6b9d)
-- **Fontes**: Russo One + Poppins (Google Fonts)
-- **Animações**: Transições suaves e hover effects
-- **Responsivo**: Mobile-first design
-
----
-
-## 🔗 APIs Utilizadas
-
-| API | Uso |
-|-----|-----|
-| [Fortnite-API.com](https://fortnite-api.com/) | Loja, cosméticos, notícias, modos |
-| [FortniteAPI.io](https://fortniteapi.io/) | Mapa |
-
----
-
-## 📦 Dependências
-
-### Produção
-- PHP 8.0+
-- cURL extension
-- mod_rewrite (Apache)
-
-### Desenvolvimento
-- PHPUnit 10.x
-- PHP-CS-Fixer 3.x
-
----
-
-## 🤝 Contribuindo
-
-1. Fork o projeto
-2. Crie uma branch: `git checkout -b feature/nova-feature`
-3. Commit: `git commit -m 'Adiciona nova feature'`
-4. Push: `git push origin feature/nova-feature`
-5. Abra um Pull Request
-
----
-
-## 📄 Licença
-
-Este projeto está sob a licença MIT - veja o arquivo [LICENSE](LICENSE) para detalhes.
-
----
-
-<div align="center">
-
-**Desenvolvido por Anderson Cavalcante como projeto de portfólio**
-
-[![GitHub](https://img.shields.io/badge/GitHub-Repo-181717?style=for-the-badge&logo=github)](https://github.com/AndersonC96/fortnite)
-
-</div>
+Dados consumidos de provedores públicos de API de terceiros.

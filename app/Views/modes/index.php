@@ -1,16 +1,16 @@
 <div class="page-container container-fn">
-    <div style="text-align: center; margin-bottom: 50px;">
+    <div class="page-header">
         <h1 class="text-gradient">🎮 Modos de Jogo</h1>
-        <p style="color: var(--text-secondary); margin-top: 15px;">Todos os modos disponíveis no Fortnite</p>
+        <p class="page-subtitle">Todos os modos disponíveis no Fortnite</p>
     </div>
     
     <!-- Category Filter -->
-    <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 30px; flex-wrap: wrap;">
-        <button class="btn-fn filter-btn active" onclick="filterPlaylists('all')">📋 Todos</button>
-        <button class="btn-fn btn-fn-outline filter-btn" onclick="filterPlaylists('br')">🎯 Battle Royale</button>
-        <button class="btn-fn btn-fn-outline filter-btn" onclick="filterPlaylists('zerobuild')">🔨 Zero Build</button>
-        <button class="btn-fn btn-fn-outline filter-btn" onclick="filterPlaylists('festival')">🎵 Festival</button>
-        <button class="btn-fn btn-fn-outline filter-btn" onclick="filterPlaylists('racing')">🏎️ Rocket Racing</button>
+    <div class="toolbar">
+        <button class="btn-fn filter-btn active" onclick="filterPlaylists('all', this)">📋 Todos</button>
+        <button class="btn-fn btn-fn-outline filter-btn" onclick="filterPlaylists('br', this)">🎯 Battle Royale</button>
+        <button class="btn-fn btn-fn-outline filter-btn" onclick="filterPlaylists('zerobuild', this)">🔨 Zero Build</button>
+        <button class="btn-fn btn-fn-outline filter-btn" onclick="filterPlaylists('festival', this)">🎵 Festival</button>
+        <button class="btn-fn btn-fn-outline filter-btn" onclick="filterPlaylists('racing', this)">🏎️ Rocket Racing</button>
     </div>
     
     <div class="items-grid" id="playlists-grid" style="grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));">
@@ -72,7 +72,7 @@
 </style>
 
 <script>
-function filterPlaylists(type) {
+function filterPlaylists(type, trigger) {
     const cards = document.querySelectorAll('.playlist-card');
     const buttons = document.querySelectorAll('.filter-btn');
     
@@ -80,8 +80,10 @@ function filterPlaylists(type) {
         btn.classList.remove('active');
         btn.classList.add('btn-fn-outline');
     });
-    event.target.classList.add('active');
-    event.target.classList.remove('btn-fn-outline');
+    if (trigger) {
+        trigger.classList.add('active');
+        trigger.classList.remove('btn-fn-outline');
+    }
     
     cards.forEach(card => {
         card.style.display = (type === 'all' || card.dataset.type === type) ? 'block' : 'none';

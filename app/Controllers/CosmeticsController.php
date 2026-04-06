@@ -49,6 +49,11 @@ class CosmeticsController extends Controller
      */
     public function show(string $id): void
     {
+        if (!preg_match('/^[a-zA-Z0-9_\-\.]+$/', $id)) {
+            $this->redirect('/cosmetics');
+            return;
+        }
+
         $cosmeticData = $this->api->getCosmetic($id);
 
         if (!$cosmeticData || $cosmeticData['status'] !== 200) {
@@ -70,7 +75,7 @@ class CosmeticsController extends Controller
     public function api(): void
     {
         $query = $this->getQuery('query', '');
-        $page = (int) $this->getQuery('page', 1);
+        $page = max(1, (int) $this->getQuery('page', 1));
         $perPage = 12;
 
         $items = [];

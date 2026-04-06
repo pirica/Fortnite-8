@@ -1,11 +1,13 @@
 // Fortnite Hub Service Worker
 const CACHE_NAME = 'fortnite-hub-v1';
+const BASE_PATH = new URL(self.registration.scope).pathname.replace(/\/$/, '');
+const baseAsset = (path) => `${BASE_PATH}${path}`;
 const urlsToCache = [
-    '/Fortnite/public/',
-    '/Fortnite/public/css/design-system.css',
-    '/Fortnite/public/css/style.css',
-    '/Fortnite/public/img/logo.png',
-    '/Fortnite/public/img/favicon.png',
+    baseAsset('/'),
+    baseAsset('/css/design-system.css'),
+    baseAsset('/css/style.css'),
+    baseAsset('/img/logo.png'),
+    baseAsset('/img/favicon.png'),
     'https://fonts.googleapis.com/css2?family=Russo+One&family=Poppins:wght@300;400;600;700&display=swap'
 ];
 
@@ -81,7 +83,7 @@ self.addEventListener('fetch', (event) => {
             .catch(() => {
                 // Offline fallback
                 if (event.request.destination === 'document') {
-                    return caches.match('/Fortnite/public/');
+                    return caches.match(baseAsset('/'));
                 }
             })
     );
@@ -98,8 +100,8 @@ self.addEventListener('sync', (event) => {
 self.addEventListener('push', (event) => {
     const options = {
         body: event.data ? event.data.text() : 'Nova atualização disponível!',
-        icon: '/Fortnite/public/img/logo.png',
-        badge: '/Fortnite/public/img/favicon.png',
+        icon: baseAsset('/img/logo.png'),
+        badge: baseAsset('/img/favicon.png'),
         vibrate: [100, 50, 100],
         data: {
             dateOfArrival: Date.now(),

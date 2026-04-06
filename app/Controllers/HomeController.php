@@ -30,6 +30,7 @@ class HomeController extends Controller
     {
         $shopData = $this->api->getShop();
         $featuredItems = [];
+        $apiError = null;
 
         if ($shopData && $shopData['status'] === 200 && !empty($shopData['data']['entries'])) {
             $count = 0;
@@ -55,10 +56,13 @@ class HomeController extends Controller
 
                 $count++;
             }
+        } elseif (is_array($shopData)) {
+            $apiError = $shopData['error'] ?? 'Não foi possível carregar os destaques da loja no momento.';
         }
 
         $this->view('home/index', [
             'featuredItems' => $featuredItems,
+            'apiError' => $apiError,
         ]);
     }
 }

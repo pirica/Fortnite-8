@@ -1,22 +1,29 @@
 <div class="page-container container-fn">
-    <div style="text-align: center; margin-bottom: 50px;">
+    <div class="page-header">
         <h1 class="text-gradient">📰 Notícias do Fortnite</h1>
         <?php if ($lastUpdate): ?>
-        <p style="color: var(--text-secondary); margin-top: 10px;">
+        <p class="page-subtitle">
             Última atualização: <?= date('d/m/Y H:i', strtotime($lastUpdate)) ?>
         </p>
         <?php endif; ?>
     </div>
     
     <!-- Tabs -->
-    <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 40px; flex-wrap: wrap;">
-        <button class="btn-fn tab-btn active" onclick="showTab('all')">📋 Todas</button>
-        <button class="btn-fn btn-fn-outline tab-btn" onclick="showTab('br')">🎮 Battle Royale</button>
-        <button class="btn-fn btn-fn-outline tab-btn" onclick="showTab('stw')">⚔️ Salve o Mundo</button>
+    <div class="toolbar">
+        <button class="btn-fn tab-btn active" onclick="showTab('all', this)">📋 Todas</button>
+        <button class="btn-fn btn-fn-outline tab-btn" onclick="showTab('br', this)">🎮 Battle Royale</button>
+        <button class="btn-fn btn-fn-outline tab-btn" onclick="showTab('stw', this)">⚔️ Salve o Mundo</button>
     </div>
     
     <!-- BR News -->
     <div id="tab-all" class="tab-content">
+        <?php if (!empty($apiError)): ?>
+        <div class="state-card" style="max-width: 760px; margin: 0 auto;">
+            <span style="font-size: 3rem;">🛰️</span>
+            <h3>Falha ao carregar notícias</h3>
+            <p><?= htmlspecialchars($apiError) ?></p>
+        </div>
+        <?php else: ?>
         <div class="items-grid" style="grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));">
             <?php 
             $allNews = array_merge(
@@ -53,6 +60,7 @@
             </div>
             <?php endforeach; ?>
         </div>
+        <?php endif; ?>
     </div>
     
     <div id="tab-br" class="tab-content" style="display: none;">
@@ -124,7 +132,7 @@
 </style>
 
 <script>
-function showTab(tab) {
+function showTab(tab, trigger) {
     document.querySelectorAll('.tab-content').forEach(el => el.style.display = 'none');
     document.querySelectorAll('.tab-btn').forEach(el => {
         el.classList.remove('active');
@@ -132,7 +140,9 @@ function showTab(tab) {
     });
     
     document.getElementById('tab-' + tab).style.display = 'block';
-    event.target.classList.add('active');
-    event.target.classList.remove('btn-fn-outline');
+    if (trigger) {
+        trigger.classList.add('active');
+        trigger.classList.remove('btn-fn-outline');
+    }
 }
 </script>

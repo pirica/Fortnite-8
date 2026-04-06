@@ -25,9 +25,9 @@ class Cache
      */
     public function __construct()
     {
-        $this->cachePath = dirname(__DIR__, 2) . '/cache';
-        $this->defaultTtl = (int) ($_ENV['CACHE_TTL'] ?? 300);
-        $this->enabled = ($_ENV['CACHE_ENABLED'] ?? 'true') === 'true';
+        $this->cachePath = (string) Config::get('paths.cache', dirname(__DIR__, 2) . '/cache');
+        $this->defaultTtl = (int) Config::get('cache.ttl', 300);
+        $this->enabled = (bool) Config::get('cache.enabled', true);
 
         // Create cache directory if not exists
         if (!is_dir($this->cachePath)) {
@@ -53,6 +53,10 @@ class Cache
         }
 
         $content = file_get_contents($file);
+        if ($content === false) {
+            return null;
+        }
+
         $data = json_decode($content, true);
 
         if ($data === null || !isset($data['expires']) || !isset($data['value'])) {
@@ -87,7 +91,12 @@ class Cache
             'value' => $value,
         ];
 
-        return file_put_contents($file, json_encode($data)) !== false;
+        $encoded = json_encode($data);
+        if ($encoded === false) {
+            return false;
+        }
+
+        return file_put_contents($file, $encoded, LOCK_EX) !== false;
     }
 
     /**
@@ -110,9 +119,14 @@ class Cache
     public function clear(): void
     {
         $files = glob($this->cachePath . '/*.cache');
+        if ($files === false) {
+            return;
+        }
         
         foreach ($files as $file) {
-            unlink($file);
+            if (is_file($file)) {
+                unlink($file);
+            }
         }
     }
 

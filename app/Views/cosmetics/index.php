@@ -1,12 +1,11 @@
-<?php $base = '/Fortnite/public'; ?>
 <div class="page-container container-fn">
-    <div style="text-align: center; margin-bottom: 50px;">
+    <div class="page-header">
         <h1 class="text-gradient">✨ Cosméticos</h1>
-        <p style="color: var(--text-secondary); margin-top: 15px;">Explore todos os cosméticos do Fortnite</p>
+        <p class="page-subtitle">Explore todos os cosméticos do Fortnite</p>
     </div>
     
     <!-- Search Bar -->
-    <form id="search-form" class="search-box" action="<?= $base ?>/cosmetics" method="GET" style="max-width: 500px; margin: 0 auto 40px;">
+    <form id="search-form" class="search-box" action="<?= $baseUrl ?>/cosmetics" method="GET" style="max-width: 500px; margin: 0 auto 40px;">
         <input type="text" name="query" id="search-input" placeholder="🔍 Buscar cosméticos..." 
                value="<?= htmlspecialchars($searchQuery) ?>">
         <button type="submit">Buscar</button>
@@ -68,7 +67,7 @@
 
 <script>
 const popularSkins = <?= json_encode($popularSkins) ?>;
-const basePath = '<?= $base ?>';
+const basePath = '<?= $baseUrl ?>';
 let currentPage = 1;
 let isLoading = false;
 let hasMore = true;
@@ -107,7 +106,16 @@ async function loadCosmetics() {
             endMessage.style.display = 'block';
         }
     } catch (error) {
-        console.error('Error loading cosmetics:', error);
+        const errorCard = document.createElement('div');
+        errorCard.className = 'feature-card';
+        errorCard.style.gridColumn = '1 / -1';
+        errorCard.style.textAlign = 'center';
+        errorCard.style.padding = '32px';
+        errorCard.innerHTML = `
+            <h3>Falha ao carregar cosméticos</h3>
+            <p style="color: var(--text-secondary)">A API está instável no momento. Tente novamente em alguns segundos.</p>
+        `;
+        grid.appendChild(errorCard);
     }
     
     loading.style.display = 'none';

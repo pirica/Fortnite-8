@@ -1,12 +1,11 @@
-<?php $base = '/Fortnite/public'; ?>
 <div class="page-container container-fn">
-    <div style="text-align: center; margin-bottom: 50px;">
+    <div class="page-header">
         <h1 class="text-gradient">🔍 Buscar Jogador</h1>
-        <p style="color: var(--text-secondary); margin-top: 15px;">Pesquise estatísticas de qualquer jogador do Fortnite</p>
+        <p class="page-subtitle">Pesquise estatísticas de qualquer jogador do Fortnite</p>
     </div>
     
     <!-- Search Form -->
-    <form class="search-box" action="<?= $base ?>/player" method="GET" style="max-width: 600px; margin: 0 auto 40px;">
+    <form class="search-box" action="<?= $baseUrl ?>/player" method="GET" style="max-width: 600px; margin: 0 auto 40px;">
         <div style="display: flex; flex-wrap: wrap; gap: 15px; justify-content: center; width: 100%;">
             <input type="text" name="player" placeholder="🎮 Digite o nome do jogador..." 
                    value="<?= htmlspecialchars($playerName) ?>" 
@@ -21,7 +20,7 @@
     </form>
     
     <?php if ($error): ?>
-    <div class="feature-card" style="max-width: 600px; margin: 0 auto; padding: 40px; text-align: center; border: 1px solid var(--fn-orange);">
+    <div class="state-card" style="max-width: 600px; margin: 0 auto; border: 1px solid var(--fn-orange);">
         <span style="font-size: 3rem;">😕</span>
         <h3 style="margin: 20px 0 10px; color: var(--fn-orange);">Jogador não encontrado</h3>
         <p style="color: var(--text-secondary);"><?= htmlspecialchars($error) ?></p>
@@ -146,9 +145,9 @@
         <div style="margin-top: 40px;">
             <p style="color: var(--text-secondary); margin-bottom: 20px;">💡 Jogadores populares para testar:</p>
             <div style="display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
-                <a href="<?= $base ?>/player?player=Ninja" class="btn-fn btn-fn-outline" style="padding: 8px 16px;">Ninja</a>
-                <a href="<?= $base ?>/player?player=Tfue" class="btn-fn btn-fn-outline" style="padding: 8px 16px;">Tfue</a>
-                <a href="<?= $base ?>/player?player=Bugha" class="btn-fn btn-fn-outline" style="padding: 8px 16px;">Bugha</a>
+                <a href="<?= $baseUrl ?>/player?player=Ninja" class="btn-fn btn-fn-outline" style="padding: 8px 16px;">Ninja</a>
+                <a href="<?= $baseUrl ?>/player?player=Tfue" class="btn-fn btn-fn-outline" style="padding: 8px 16px;">Tfue</a>
+                <a href="<?= $baseUrl ?>/player?player=Bugha" class="btn-fn btn-fn-outline" style="padding: 8px 16px;">Bugha</a>
             </div>
         </div>
     </div>

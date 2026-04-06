@@ -1,9 +1,8 @@
-<?php $base = '/Fortnite/public'; ?>
 <div class="page-container container-fn">
-    <div style="text-align: center; margin-bottom: 50px;">
+    <div class="page-header">
         <h1 class="text-gradient">⚔️ Notícias Salve o Mundo</h1>
         <?php if ($lastUpdate): ?>
-        <p style="color: var(--text-secondary); margin-top: 10px;">
+        <p class="page-subtitle">
             Última atualização: <?= date('d/m/Y H:i', strtotime($lastUpdate)) ?>
         </p>
         <?php endif; ?>
@@ -16,7 +15,7 @@
         <p style="color: var(--text-secondary); margin-bottom: 30px;">
             Não há notícias disponíveis no momento. Volte mais tarde!
         </p>
-        <a href="<?= $base ?>/news" class="btn-fn">Ver notícias de Battle Royale</a>
+        <a href="<?= $baseUrl ?>/news" class="btn-fn">Ver notícias de Battle Royale</a>
     </div>
     <?php else: ?>
     
@@ -48,7 +47,7 @@
     <?php endif; ?>
     
     <div style="text-align: center; margin-top: 40px;">
-        <a href="<?= $base ?>/news" class="btn-fn btn-fn-outline">← Ver todas as notícias</a>
+        <a href="<?= $baseUrl ?>/news" class="btn-fn btn-fn-outline">← Ver todas as notícias</a>
     </div>
 </div>
 

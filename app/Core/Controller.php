@@ -27,6 +27,7 @@ abstract class Controller
         
         // Set page title
         $pageTitle = $this->pageTitle;
+        $baseUrl = Config::baseUrl();
         
         // Get current page for navigation
         $currentPage = $this->getCurrentPage();
@@ -63,7 +64,17 @@ abstract class Controller
      */
     protected function redirect(string $url): void
     {
-        header("Location: {$url}");
+        if (strpos($url, 'http://') === 0 || strpos($url, 'https://') === 0) {
+            header('Location: ' . $url);
+            exit;
+        }
+
+        $target = $url;
+        if (strpos($url, '/') === 0) {
+            $target = Config::baseUrl() . $url;
+        }
+
+        header('Location: ' . $target);
         exit;
     }
 
@@ -72,8 +83,15 @@ abstract class Controller
      */
     private function getCurrentPage(): string
     {
-        $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-        return trim($uri, '/') ?: 'home';
+        $uri = (string) parse_url((string) ($_SERVER['REQUEST_URI'] ?? '/'), PHP_URL_PATH);
+        $baseUrl = Config::baseUrl();
+
+        if ($baseUrl !== '' && strpos($uri, $baseUrl) === 0) {
+            $uri = substr($uri, strlen($baseUrl));
+        }
+
+        $current = trim($uri ?: '/', '/');
+        return $current === '' ? 'home' : $current;
     }
 
     /**

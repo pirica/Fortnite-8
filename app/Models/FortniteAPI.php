@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace FortniteHub\Models;
 
-use FortniteHub\Core\Cache;
+use FortniteHub\Core\ApiResult;
+use FortniteHub\Services\FortniteApiClient;
 
 /**
  * Fortnite API Model
@@ -15,73 +16,14 @@ use FortniteHub\Core\Cache;
  */
 class FortniteAPI
 {
-    /** @var string */
-    private string $apiUrl;
-
-    /** @var string */
-    private string $apiKey;
-
-    /** @var Cache */
-    private Cache $cache;
+    private FortniteApiClient $client;
 
     /**
      * Initialize API configuration
      */
     public function __construct()
     {
-        $this->apiUrl = $_ENV['FORTNITE_API_URL'] ?? 'https://fortnite-api.com/v2/';
-        $this->apiKey = $_ENV['FORTNITE_API_KEY'] ?? '';
-        $this->cache = new Cache();
-    }
-
-    /**
-     * Make API request
-     * 
-     * @return array<string, mixed>|null
-     */
-    public function call(string $endpoint, bool $useCache = true, int $cacheTtl = 300): ?array
-    {
-        $cacheKey = 'api_' . md5($endpoint);
-
-        // Try cache first
-        if ($useCache) {
-            $cached = $this->cache->get($cacheKey);
-            if ($cached !== null) {
-                return $cached;
-            }
-        }
-
-        // Make API request
-        $url = rtrim($this->apiUrl, '/') . '/' . ltrim($endpoint, '/');
-        
-        $ch = curl_init();
-        curl_setopt_array($ch, [
-            CURLOPT_URL => $url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_TIMEOUT => 30,
-            CURLOPT_HTTPHEADER => [
-                'Authorization: ' . $this->apiKey,
-                'Accept: application/json',
-            ],
-        ]);
-
-        $response = curl_exec($ch);
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $error = curl_error($ch);
-        curl_close($ch);
-
-        if ($error || $httpCode !== 200) {
-            return null;
-        }
-
-        $data = json_decode($response, true);
-
-        // Cache successful response
-        if ($useCache && $data !== null && isset($data['status']) && $data['status'] === 200) {
-            $this->cache->set($cacheKey, $data, $cacheTtl);
-        }
-
-        return $data;
+        $this->client = new FortniteApiClient();
     }
 
     /**
@@ -91,7 +33,7 @@ class FortniteAPI
      */
     public function getShop(): ?array
     {
-        return $this->call('shop', true, 600); // Cache for 10 minutes
+        return $this->normalize($this->client->getShop());
     }
 
     /**
@@ -101,7 +43,7 @@ class FortniteAPI
      */
     public function getNews(): ?array
     {
-        return $this->call('news', true, 300);
+        return $this->normalize($this->client->getNews());
     }
 
     /**
@@ -111,7 +53,7 @@ class FortniteAPI
      */
     public function getNewsBR(): ?array
     {
-        return $this->call('news/br', true, 300);
+        return $this->normalize($this->client->getNewsBR());
     }
 
     /**
@@ -121,7 +63,7 @@ class FortniteAPI
      */
     public function getNewsSTW(): ?array
     {
-        return $this->call('news/stw', true, 300);
+        return $this->normalize($this->client->getNewsSTW());
     }
 
     /**
@@ -131,8 +73,7 @@ class FortniteAPI
      */
     public function searchCosmetics(string $query): ?array
     {
-        $endpoint = 'cosmetics/br/search/all?name=' . urlencode($query) . '&matchMethod=contains';
-        return $this->call($endpoint, true, 600);
+        return $this->normalize($this->client->searchCosmetics($query));
     }
 
     /**
@@ -142,7 +83,7 @@ class FortniteAPI
      */
     public function getCosmetic(string $id): ?array
     {
-        return $this->call("cosmetics/br/{$id}", true, 3600); // Cache for 1 hour
+        return $this->normalize($this->client->getCosmetic($id));
     }
 
     /**
@@ -152,8 +93,7 @@ class FortniteAPI
      */
     public function getCosmeticByName(string $name): ?array
     {
-        $endpoint = 'cosmetics/br/search?name=' . urlencode($name);
-        return $this->call($endpoint, true, 3600);
+        return $this->normalize($this->client->getCosmeticByName($name));
     }
 
     /**
@@ -163,8 +103,7 @@ class FortniteAPI
      */
     public function getPlayerStats(string $name, string $platform = 'epic'): ?array
     {
-        $endpoint = "stats/br/v2?name=" . urlencode($name) . "&accountType=" . $platform;
-        return $this->call($endpoint, true, 300);
+        return $this->normalize($this->client->getPlayerStats($name, $platform));
     }
 
     /**
@@ -174,6 +113,23 @@ class FortniteAPI
      */
     public function getPlaylists(): ?array
     {
-        return $this->call('../v1/playlists', true, 3600);
+        return $this->normalize($this->client->getPlaylists());
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private function normalize(ApiResult $result): array
+    {
+        if ($result->ok && is_array($result->payload)) {
+            return $result->payload;
+        }
+
+        return [
+            'status' => $result->statusCode,
+            'error' => $result->errorMessage ?? 'Não foi possível obter dados no momento.',
+            'error_type' => $result->errorType ?? 'unknown',
+            'data' => [],
+        ];
     }
 }

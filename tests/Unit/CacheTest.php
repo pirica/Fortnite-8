@@ -6,6 +6,7 @@ namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use FortniteHub\Core\Cache;
+use FortniteHub\Core\Config;
 
 /**
  * Cache Unit Tests
@@ -17,9 +18,14 @@ class CacheTest extends TestCase
 
     protected function setUp(): void
     {
-        // Disable cache for testing to avoid file system issues
+        // Enable cache explicitly for cache behavior assertions.
         $_ENV['CACHE_ENABLED'] = 'true';
         $_ENV['CACHE_TTL'] = '60';
+        putenv('CACHE_ENABLED=true');
+        putenv('CACHE_TTL=60');
+
+        Config::bootstrap(dirname(__DIR__, 2));
+
         $this->cache = new Cache();
     }
 

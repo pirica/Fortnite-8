@@ -2,7 +2,9 @@
     "name": "Fortnite Hub",
     "short_name": "FN Hub",
     "description": "Portal de informações do Fortnite - Loja, Cosméticos, Notícias e mais",
-    "start_url": "/Fortnite/public/",
+    "id": "./",
+    "start_url": "./",
+    "scope": "./",
     "display": "standalone",
     "background_color": "#0d0d1a",
     "theme_color": "#9d4edd",
@@ -31,7 +33,7 @@
             "name": "Loja",
             "short_name": "Loja",
             "description": "Ver loja diária",
-            "url": "/Fortnite/public/shop",
+            "url": "./shop",
             "icons": [
                 {
                     "src": "./img/logo.png",
@@ -43,7 +45,7 @@
             "name": "Cosméticos",
             "short_name": "Cosméticos",
             "description": "Explorar cosméticos",
-            "url": "/Fortnite/public/cosmetics",
+            "url": "./cosmetics",
             "icons": [
                 {
                     "src": "./img/logo.png",

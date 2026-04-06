@@ -18,6 +18,15 @@ require BASE_PATH . '/public/autoload.php';
 
 // Set testing environment variables
 $_ENV['APP_ENV'] = 'testing';
+$_ENV['APP_DEBUG'] = 'true';
 $_ENV['CACHE_ENABLED'] = 'false';
 $_ENV['FORTNITE_API_KEY'] = 'test-api-key';
 $_ENV['FORTNITE_API_URL'] = 'https://fortnite-api.com/v2/';
+
+putenv('APP_ENV=testing');
+putenv('APP_DEBUG=true');
+putenv('CACHE_ENABLED=false');
+putenv('FORTNITE_API_KEY=test-api-key');
+putenv('FORTNITE_API_URL=https://fortnite-api.com/v2/');
+
+FortniteHub\Core\Config::bootstrap(BASE_PATH);

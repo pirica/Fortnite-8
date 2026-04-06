@@ -28,8 +28,13 @@ class PlayerController extends Controller
      */
     public function search(): void
     {
-        $playerName = $this->getQuery('player', '');
-        $platform = $this->getQuery('platform', 'epic');
+        $playerName = trim((string) $this->getQuery('player', ''));
+        $platform = strtolower(trim((string) $this->getQuery('platform', 'epic')));
+        $allowedPlatforms = ['epic', 'psn', 'xbl'];
+
+        if (!in_array($platform, $allowedPlatforms, true)) {
+            $platform = 'epic';
+        }
         
         $playerData = null;
         $error = null;

@@ -33,6 +33,7 @@ class ShopController extends Controller
         
         $sections = [];
         $shopDate = '';
+        $apiError = null;
 
         if ($shopData && $shopData['status'] === 200 && !empty($shopData['data']['entries'])) {
             $shopDate = $shopData['data']['date'] ?? '';
@@ -103,12 +104,15 @@ class ShopController extends Controller
                 
                 $sections[$sectionName][] = $item;
             }
+        } elseif (is_array($shopData)) {
+            $apiError = $shopData['error'] ?? 'Não foi possível carregar a loja agora.';
         }
 
         $this->view('shop/index', [
             'sections' => $sections,
             'shopDate' => $shopDate,
             'searchQuery' => $searchQuery,
+            'apiError' => $apiError,
         ]);
     }
 }

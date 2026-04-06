@@ -1,34 +1,39 @@
-<?php $base = '/Fortnite/public'; ?>
 <div class="page-container container-fn">
-    <div style="text-align: center; margin-bottom: 50px;">
+    <div class="page-header">
         <h1 class="text-gradient">🛒 Loja de Hoje</h1>
         <?php if ($shopDate): ?>
-        <p style="color: var(--text-secondary); margin-top: 10px;">
+        <p class="page-subtitle">
             Atualizada em: <?= date('d/m/Y H:i', strtotime($shopDate)) ?>
         </p>
         <?php endif; ?>
     </div>
     
     <!-- Search Bar -->
-    <form class="search-box" action="<?= $base ?>/shop" method="GET" style="max-width: 500px; margin: 0 auto 40px;">
+    <form class="search-box" action="<?= $baseUrl ?>/shop" method="GET" style="max-width: 500px; margin: 0 auto 40px;">
         <input type="text" name="query" placeholder="🔍 Buscar na loja..." 
                value="<?= htmlspecialchars($searchQuery) ?>">
         <button type="submit">Buscar</button>
     </form>
     
-    <?php if (empty($sections)): ?>
-    <div style="text-align: center; padding: 60px;">
+    <?php if (!empty($apiError)): ?>
+    <div class="state-card">
+        <p style="font-size: 3rem;">⚠️</p>
+        <h3>Loja temporariamente indisponível</h3>
+        <p><?= htmlspecialchars($apiError) ?></p>
+    </div>
+    <?php elseif (empty($sections)): ?>
+    <div class="state-card">
         <p style="font-size: 3rem;">🛍️</p>
         <h3>Nenhum item encontrado</h3>
-        <p style="color: var(--text-secondary);">Tente buscar por outro termo.</p>
+        <p>Tente buscar por outro termo.</p>
     </div>
     <?php else: ?>
     
     <?php foreach ($sections as $sectionName => $items): ?>
     <section style="margin-bottom: 50px;">
-        <h2 style="margin-bottom: 25px; display: flex; align-items: center; gap: 15px;">
+        <h2 class="section-head">
             <span class="text-gradient"><?= htmlspecialchars($sectionName) ?></span>
-            <span style="background: var(--fn-purple); padding: 4px 12px; border-radius: 20px; font-size: 0.85rem;">
+            <span class="chip">
                 <?= count($items) ?> itens
             </span>
         </h2>
@@ -50,7 +55,7 @@
                 
                 <img src="<?= htmlspecialchars($item['image']) ?>" 
                      alt="<?= htmlspecialchars($item['name']) ?>"
-                     onerror="this.src='<?= $base ?>/img/logo.png'"
+                     onerror="this.src='<?= $baseUrl ?>/img/logo.png'"
                      loading="lazy">
                 
                 <div class="card-body">

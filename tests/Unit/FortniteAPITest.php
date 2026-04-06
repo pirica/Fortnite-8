@@ -17,8 +17,14 @@ class FortniteAPITest extends TestCase
     protected function setUp(): void
     {
         $_ENV['FORTNITE_API_KEY'] = 'test-key';
-        $_ENV['FORTNITE_API_URL'] = 'https://fortnite-api.com/v2/';
+        $_ENV['FORTNITE_API_URL'] = 'http://127.0.0.1:9/';
         $_ENV['CACHE_ENABLED'] = 'false';
+
+        putenv('FORTNITE_API_KEY=test-key');
+        putenv('FORTNITE_API_URL=http://127.0.0.1:9/');
+        putenv('CACHE_ENABLED=false');
+
+        \FortniteHub\Core\Config::bootstrap(dirname(__DIR__, 2));
         
         $this->api = new FortniteAPI();
     }
@@ -28,44 +34,33 @@ class FortniteAPITest extends TestCase
         $this->assertInstanceOf(FortniteAPI::class, $this->api);
     }
 
-    public function testGetShopReturnsArrayOrNull(): void
+    public function testGetShopReturnsStructuredFailureWhenApiUnavailable(): void
     {
         $result = $this->api->getShop();
         
-        $this->assertTrue(
-            is_array($result) || is_null($result),
-            'getShop should return array or null'
-        );
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('status', $result);
+        $this->assertArrayHasKey('error', $result);
+        $this->assertArrayHasKey('error_type', $result);
+        $this->assertNotSame(200, (int) $result['status']);
     }
 
-    public function testGetNewsReturnsArrayOrNull(): void
-    {
-        $result = $this->api->getNews();
-        
-        $this->assertTrue(
-            is_array($result) || is_null($result),
-            'getNews should return array or null'
-        );
-    }
-
-    public function testSearchCosmeticsReturnsArrayOrNull(): void
+    public function testSearchCosmeticsReturnsStructuredFailureWhenApiUnavailable(): void
     {
         $result = $this->api->searchCosmetics('Raven');
         
-        $this->assertTrue(
-            is_array($result) || is_null($result),
-            'searchCosmetics should return array or null'
-        );
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('status', $result);
+        $this->assertArrayHasKey('error', $result);
+        $this->assertArrayHasKey('error_type', $result);
     }
 
-    public function testGetCosmeticWithInvalidIdReturnsNull(): void
+    public function testInvalidCosmeticIdDoesNotReturnFatalNull(): void
     {
         $result = $this->api->getCosmetic('invalid_id_12345');
         
-        // Should return null or error response
-        $this->assertTrue(
-            is_null($result) || (is_array($result) && isset($result['status']) && $result['status'] !== 200),
-            'getCosmetic with invalid ID should return null or error'
-        );
+        $this->assertIsArray($result);
+        $this->assertArrayHasKey('status', $result);
+        $this->assertArrayHasKey('error', $result);
     }
 }

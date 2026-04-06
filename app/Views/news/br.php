@@ -1,19 +1,18 @@
-<?php $base = '/Fortnite/public'; ?>
 <div class="page-container container-fn">
-    <div style="text-align: center; margin-bottom: 50px;">
+    <div class="page-header">
         <h1 class="text-gradient">🎮 Notícias Battle Royale</h1>
         <?php if ($lastUpdate): ?>
-        <p style="color: var(--text-secondary); margin-top: 10px;">
+        <p class="page-subtitle">
             Última atualização: <?= date('d/m/Y H:i', strtotime($lastUpdate)) ?>
         </p>
         <?php endif; ?>
     </div>
     
     <?php if (empty($news)): ?>
-    <div style="text-align: center; padding: 60px;">
+    <div class="state-card">
         <span style="font-size: 4rem;">🎮</span>
         <h3 style="margin: 20px 0;">Nenhuma notícia disponível</h3>
-        <a href="<?= $base ?>/news" class="btn-fn">Ver todas as notícias</a>
+        <a href="<?= $baseUrl ?>/news" class="btn-fn">Ver todas as notícias</a>
     </div>
     <?php else: ?>
     
@@ -68,7 +67,7 @@
     <?php endif; ?>
     
     <div style="text-align: center; margin-top: 40px;">
-        <a href="<?= $base ?>/news" class="btn-fn btn-fn-outline">← Ver todas as notícias</a>
+        <a href="<?= $baseUrl ?>/news" class="btn-fn btn-fn-outline">← Ver todas as notícias</a>
     </div>
 </div>
 

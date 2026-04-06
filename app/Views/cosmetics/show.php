@@ -1,5 +1,4 @@
 <?php 
-$base = '/Fortnite/public';
 
 // Safe string helper function
 function safeStr($value, $default = ''): string {
@@ -13,7 +12,7 @@ function safeStr($value, $default = ''): string {
 $featuredImg = $item['images']['featured'] ?? null;
 $iconImg = $item['images']['icon'] ?? null;
 
-$imageUrl = $base . '/img/logo.png';
+$imageUrl = $baseUrl . '/img/logo.png';
 if (is_string($featuredImg) && !empty($featuredImg)) {
     $imageUrl = $featuredImg;
 } elseif (is_string($iconImg) && !empty($iconImg)) {
@@ -24,7 +23,7 @@ $rarity = strtolower(safeStr($item['rarity']['value'] ?? null, 'common'));
 $itemName = safeStr($item['name'] ?? null, 'Cosmético');
 ?>
 <div class="page-container container-fn">
-    <a href="<?= $base ?>/cosmetics" class="btn-fn btn-fn-outline" style="margin-bottom: 30px;">← Voltar</a>
+    <a href="<?= $baseUrl ?>/cosmetics" class="btn-fn btn-fn-outline" style="margin-bottom: 30px;">← Voltar</a>
     
     <div style="display: grid; grid-template-columns: 1fr 1.5fr; gap: 40px; max-width: 1200px; margin: 0 auto;">
         <!-- Image Section -->
@@ -33,7 +32,7 @@ $itemName = safeStr($item['name'] ?? null, 'Cosmético');
                 <img src="<?= htmlspecialchars($imageUrl) ?>" 
                      alt="<?= htmlspecialchars($itemName) ?>" 
                      style="max-width: 100%; border-radius: 12px; border-bottom: 4px solid var(--rarity-<?= $rarity ?>);"
-                     onerror="this.src='<?= $base ?>/img/logo.png'">
+                     onerror="this.src='<?= $baseUrl ?>/img/logo.png'">
                 
                 <!-- LEGO/Bean versions -->
                 <?php 

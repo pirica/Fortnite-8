@@ -1,11 +1,11 @@
 <div class="page-container container-fn">
-    <div style="text-align: center; margin-bottom: 50px;">
+    <div class="page-header">
         <h1 class="text-gradient">🗺️ Mapa do Fortnite</h1>
-        <p style="color: var(--text-secondary); margin-top: 15px;">Visualize o mapa atual do Battle Royale</p>
+        <p class="page-subtitle">Visualize o mapa atual do Battle Royale</p>
     </div>
     
     <!-- Map Options -->
-    <div style="display: flex; justify-content: center; gap: 15px; margin-bottom: 30px; flex-wrap: wrap;">
+    <div class="toolbar" style="margin-bottom: 30px;">
         <button class="btn-fn" onclick="showMap('poi')" id="btn-poi">🏷️ Com POIs</button>
         <button class="btn-fn btn-fn-outline" onclick="showMap('blank')" id="btn-blank">🗺️ Limpo</button>
     </div>

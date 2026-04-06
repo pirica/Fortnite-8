@@ -33,6 +33,7 @@ class NewsController extends Controller
         $brNews = [];
         $stwNews = [];
         $lastUpdate = '';
+        $apiError = null;
 
         if ($newsData && $newsData['status'] === 200) {
             $lastUpdate = $newsData['data']['br']['date'] ?? '';
@@ -47,12 +48,15 @@ class NewsController extends Controller
             if (!empty($newsData['data']['stw']['messages'])) {
                 $stwNews = $newsData['data']['stw']['messages'];
             }
+        } elseif (is_array($newsData)) {
+            $apiError = $newsData['error'] ?? 'Não foi possível carregar as notícias no momento.';
         }
 
         $this->view('news/index', [
             'brNews' => $brNews,
             'stwNews' => $stwNews,
             'lastUpdate' => $lastUpdate,
+            'apiError' => $apiError,
         ]);
     }
 
