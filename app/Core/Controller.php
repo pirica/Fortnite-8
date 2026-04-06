@@ -64,14 +64,15 @@ abstract class Controller
      */
     protected function redirect(string $url): void
     {
-        if (strpos($url, 'http://') === 0 || strpos($url, 'https://') === 0) {
-            header('Location: ' . $url);
-            exit;
-        }
-
         $target = $url;
-        if (strpos($url, '/') === 0) {
-            $target = Config::baseUrl() . $url;
+
+        // Keep absolute URLs untouched.
+        if (!preg_match('#^(https?:)?//#i', $url)) {
+            $baseUrl = Config::baseUrl();
+
+            if (str_starts_with($url, '/')) {
+                $target = ($baseUrl === '' ? '' : rtrim($baseUrl, '/')) . $url;
+            }
         }
 
         header('Location: ' . $target);

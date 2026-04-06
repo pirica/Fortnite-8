@@ -1,12 +1,9 @@
 <div class="page-container container-fn">
-    <div class="page-header">
-        <h1 class="text-gradient">📰 Notícias do Fortnite</h1>
-        <?php if ($lastUpdate): ?>
-        <p class="page-subtitle">
-            Última atualização: <?= date('d/m/Y H:i', strtotime($lastUpdate)) ?>
-        </p>
-        <?php endif; ?>
-    </div>
+    <?php
+    $title = '📰 Notícias do Fortnite';
+    $subtitle = $lastUpdate ? 'Última atualização: ' . date('d/m/Y H:i', strtotime($lastUpdate)) : null;
+    include __DIR__ . '/../partials/page-header.php';
+    ?>
     
     <!-- Tabs -->
     <div class="toolbar">
@@ -18,11 +15,14 @@
     <!-- BR News -->
     <div id="tab-all" class="tab-content">
         <?php if (!empty($apiError)): ?>
-        <div class="state-card" style="max-width: 760px; margin: 0 auto;">
-            <span style="font-size: 3rem;">🛰️</span>
-            <h3>Falha ao carregar notícias</h3>
-            <p><?= htmlspecialchars($apiError) ?></p>
-        </div>
+        <?php
+        $icon = '🛰️';
+        $title = 'Falha ao carregar notícias';
+        $message = htmlspecialchars($apiError);
+        $variant = 'default';
+        $size = 'wide';
+        include __DIR__ . '/../partials/state-card.php';
+        ?>
         <?php else: ?>
         <div class="items-grid" style="grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));">
             <?php 
@@ -35,29 +35,15 @@
             foreach ($allNews as $index => $news): 
                 $imageUrl = $news['tileImage'] ?? $news['image'] ?? '';
                 $priority = $news['sortingPriority'] ?? 0;
+                $newsClasses = $priority >= 10 ? 'news-card--featured' : '';
+                $newsTitle = $news['title'] ?? 'Sem título';
+                $newsBody = htmlspecialchars(substr((string) ($news['body'] ?? ''), 0, 120)) . '...';
+                $newsImageUrl = $imageUrl;
+                $newsBadgeLeft = '<span style="background: ' . htmlspecialchars($news['source'] === 'br' ? 'var(--fn-blue)' : 'var(--fn-orange)') . '">' . ($news['source'] === 'br' ? '🎮 BR' : '⚔️ STW') . '</span>';
+                $newsBadgeRight = $priority >= 10 ? '<span style="background: var(--fn-yellow); color: #000; font-weight: bold;">⭐ DESTAQUE</span>' : '';
+                $newsDelay = $index * 0.05 . 's';
+                include __DIR__ . '/../partials/news-card.php';
             ?>
-            <div class="item-card news-card" style="animation-delay: <?= $index * 0.05 ?>s;">
-                <?php if ($priority >= 10): ?>
-                <span style="position: absolute; top: 10px; right: 10px; background: var(--fn-yellow); color: #000; padding: 3px 10px; border-radius: 4px; font-size: 0.75rem; font-weight: bold;">
-                    ⭐ DESTAQUE
-                </span>
-                <?php endif; ?>
-                
-                <span style="position: absolute; top: 10px; left: 10px; background: <?= $news['source'] === 'br' ? 'var(--fn-blue)' : 'var(--fn-orange)' ?>; padding: 3px 10px; border-radius: 4px; font-size: 0.75rem;">
-                    <?= $news['source'] === 'br' ? '🎮 BR' : '⚔️ STW' ?>
-                </span>
-                
-                <?php if ($imageUrl): ?>
-                <img src="<?= htmlspecialchars($imageUrl) ?>" alt="<?= htmlspecialchars($news['title'] ?? '') ?>" loading="lazy">
-                <?php endif; ?>
-                
-                <div class="card-body">
-                    <h5 class="card-title"><?= htmlspecialchars($news['title'] ?? 'Sem título') ?></h5>
-                    <p class="card-text" style="color: var(--text-secondary); font-size: 0.9rem;">
-                        <?= htmlspecialchars(substr($news['body'] ?? '', 0, 120)) ?>...
-                    </p>
-                </div>
-            </div>
             <?php endforeach; ?>
         </div>
         <?php endif; ?>
@@ -67,19 +53,15 @@
         <div class="items-grid" style="grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));">
             <?php foreach ($brNews as $index => $news): 
                 $imageUrl = $news['tileImage'] ?? $news['image'] ?? '';
+                $newsTitle = $news['title'] ?? 'Sem título';
+                $newsBody = htmlspecialchars((string) ($news['body'] ?? ''));
+                $newsImageUrl = $imageUrl;
+                $newsBadgeLeft = '';
+                $newsBadgeRight = '';
+                $newsClasses = '';
+                $newsDelay = $index * 0.05 . 's';
+                include __DIR__ . '/../partials/news-card.php';
             ?>
-            <div class="item-card news-card" style="animation-delay: <?= $index * 0.05 ?>s;">
-                <?php if ($imageUrl): ?>
-                <img src="<?= htmlspecialchars($imageUrl) ?>" alt="<?= htmlspecialchars($news['title'] ?? '') ?>" loading="lazy">
-                <?php endif; ?>
-                
-                <div class="card-body">
-                    <h5 class="card-title"><?= htmlspecialchars($news['title'] ?? 'Sem título') ?></h5>
-                    <p class="card-text" style="color: var(--text-secondary); font-size: 0.9rem;">
-                        <?= htmlspecialchars($news['body'] ?? '') ?>
-                    </p>
-                </div>
-            </div>
             <?php endforeach; ?>
         </div>
     </div>
@@ -95,19 +77,18 @@
         <div class="items-grid" style="grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));">
             <?php foreach ($stwNews as $index => $news): 
                 $imageUrl = $news['image'] ?? '';
+                $newsTitle = $news['title'] ?? 'Sem título';
+                $newsBody = htmlspecialchars((string) ($news['body'] ?? ''));
+                if (!empty($news['adspace'])) {
+                    $newsBody .= '<p style="color: var(--fn-yellow); font-size: 0.85rem; margin-top: 10px;">📢 ' . htmlspecialchars((string) $news['adspace']) . '</p>';
+                }
+                $newsImageUrl = $imageUrl;
+                $newsBadgeLeft = '';
+                $newsBadgeRight = '';
+                $newsClasses = '';
+                $newsDelay = $index * 0.05 . 's';
+                include __DIR__ . '/../partials/news-card.php';
             ?>
-            <div class="item-card news-card" style="animation-delay: <?= $index * 0.05 ?>s;">
-                <?php if ($imageUrl): ?>
-                <img src="<?= htmlspecialchars($imageUrl) ?>" alt="<?= htmlspecialchars($news['title'] ?? '') ?>" loading="lazy">
-                <?php endif; ?>
-                
-                <div class="card-body">
-                    <h5 class="card-title"><?= htmlspecialchars($news['title'] ?? 'Sem título') ?></h5>
-                    <p class="card-text" style="color: var(--text-secondary); font-size: 0.9rem;">
-                        <?= htmlspecialchars($news['body'] ?? '') ?>
-                    </p>
-                </div>
-            </div>
             <?php endforeach; ?>
         </div>
         <?php endif; ?>

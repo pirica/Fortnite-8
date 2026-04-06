@@ -14,11 +14,19 @@ final class Config
      */
     private static array $config = [];
 
+    /**
+     * @var array<int, string>
+     */
+    private static array $warnings = [];
+
     public static function bootstrap(string $basePath): void
     {
         \FortniteHub\Core\Env::load($basePath . '/.env');
 
-        $env = \FortniteHub\Core\Env::get('APP_ENV', 'production') ?? 'production';
+        self::$warnings = [];
+
+        $envRaw = \FortniteHub\Core\Env::get('APP_ENV', 'production') ?? 'production';
+        $env = self::normalizeEnv($envRaw);
         $debugDefault = $env !== 'production';
         $debug = \FortniteHub\Core\Env::bool('APP_DEBUG', $debugDefault);
 
@@ -26,6 +34,25 @@ final class Config
         $baseUrl = $configuredBaseUrl !== ''
             ? self::normalizeBaseUrl($configuredBaseUrl)
             : self::detectBaseUrl();
+
+        $cacheTtl = (int) (\FortniteHub\Core\Env::get('CACHE_TTL', '300') ?? '300');
+        if ($cacheTtl <= 0) {
+            $cacheTtl = 300;
+            self::$warnings[] = 'CACHE_TTL inválido; fallback aplicado para 300 segundos.';
+        }
+
+        $apiUrl = (string) (\FortniteHub\Core\Env::get('FORTNITE_API_URL', 'https://fortnite-api.com/v2/') ?? 'https://fortnite-api.com/v2/');
+        $apiUrl = self::normalizeApiUrl($apiUrl);
+
+        $apiKey = trim((string) (\FortniteHub\Core\Env::get('FORTNITE_API_KEY', '') ?? ''));
+        if ($env === 'production' && $apiKey === '') {
+            self::$warnings[] = 'FORTNITE_API_KEY não configurada em produção; recursos de API podem falhar.';
+        }
+
+        $strictConfig = \FortniteHub\Core\Env::bool('APP_STRICT_CONFIG', false);
+        if ($strictConfig && $env === 'production' && $apiKey === '') {
+            throw new \RuntimeException('APP_STRICT_CONFIG está ativo, mas FORTNITE_API_KEY não foi configurada em produção.');
+        }
 
         self::$config = [
             'paths' => [
@@ -38,16 +65,30 @@ final class Config
                 'debug' => $debug,
                 'url' => \FortniteHub\Core\Env::get('APP_URL', ''),
                 'base_url' => $baseUrl,
+                'strict_config' => $strictConfig,
             ],
             'cache' => [
                 'enabled' => \FortniteHub\Core\Env::bool('CACHE_ENABLED', true),
-                'ttl' => (int) (\FortniteHub\Core\Env::get('CACHE_TTL', '300') ?? '300'),
+                'ttl' => $cacheTtl,
             ],
             'api' => [
-                'fortnite_url' => rtrim((string) (\FortniteHub\Core\Env::get('FORTNITE_API_URL', 'https://fortnite-api.com/v2/') ?? 'https://fortnite-api.com/v2/'), '/') . '/',
-                'fortnite_key' => (string) (\FortniteHub\Core\Env::get('FORTNITE_API_KEY', '') ?? ''),
+                'fortnite_url' => $apiUrl,
+                'fortnite_key' => $apiKey,
             ],
         ];
+    }
+
+    /**
+     * @return array<int, string>
+     */
+    public static function warnings(): array
+    {
+        return self::$warnings;
+    }
+
+    public static function hasWarnings(): bool
+    {
+        return self::$warnings !== [];
     }
 
     /**
@@ -79,6 +120,11 @@ final class Config
         return (bool) self::get('app.debug', false);
     }
 
+    public static function isStrictConfig(): bool
+    {
+        return (bool) self::get('app.strict_config', false);
+    }
+
     private static function detectBaseUrl(): string
     {
         if (PHP_SAPI === 'cli') {
@@ -106,5 +152,34 @@ final class Config
         }
 
         return '/' . trim($value, '/');
+    }
+
+    private static function normalizeEnv(string $env): string
+    {
+        $normalized = strtolower(trim($env));
+        $allowed = ['production', 'development', 'testing'];
+
+        if (!in_array($normalized, $allowed, true)) {
+            self::$warnings[] = 'APP_ENV inválido; fallback aplicado para production.';
+            return 'production';
+        }
+
+        return $normalized;
+    }
+
+    private static function normalizeApiUrl(string $url): string
+    {
+        $normalized = trim($url);
+        if ($normalized === '') {
+            self::$warnings[] = 'FORTNITE_API_URL vazia; fallback aplicado para URL padrão.';
+            return 'https://fortnite-api.com/v2/';
+        }
+
+        if (filter_var($normalized, FILTER_VALIDATE_URL) === false) {
+            self::$warnings[] = 'FORTNITE_API_URL inválida; fallback aplicado para URL padrão.';
+            return 'https://fortnite-api.com/v2/';
+        }
+
+        return rtrim($normalized, '/') . '/';
     }
 }

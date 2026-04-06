@@ -9,6 +9,12 @@ require BASE_PATH . '/public/autoload.php';
 
 Config::bootstrap(BASE_PATH);
 
+if (Config::hasWarnings()) {
+    foreach (Config::warnings() as $warning) {
+        error_log('[Fortnite Hub][Config] ' . $warning);
+    }
+}
+
 error_reporting(E_ALL);
 ini_set('display_errors', Config::isDebug() ? '1' : '0');
 

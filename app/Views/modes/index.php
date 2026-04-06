@@ -1,8 +1,9 @@
 <div class="page-container container-fn">
-    <div class="page-header">
-        <h1 class="text-gradient">🎮 Modos de Jogo</h1>
-        <p class="page-subtitle">Todos os modos disponíveis no Fortnite</p>
-    </div>
+    <?php
+    $title = '🎮 Modos de Jogo';
+    $subtitle = 'Todos os modos disponíveis no Fortnite';
+    include __DIR__ . '/../partials/page-header.php';
+    ?>
     
     <!-- Category Filter -->
     <div class="toolbar">

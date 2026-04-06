@@ -1,8 +1,9 @@
 <div class="page-container container-fn">
-    <div class="page-header">
-        <h1 class="text-gradient">🗺️ Mapa do Fortnite</h1>
-        <p class="page-subtitle">Visualize o mapa atual do Battle Royale</p>
-    </div>
+    <?php
+    $title = '🗺️ Mapa do Fortnite';
+    $subtitle = 'Visualize o mapa atual do Battle Royale';
+    include __DIR__ . '/../partials/page-header.php';
+    ?>
     
     <!-- Map Options -->
     <div class="toolbar" style="margin-bottom: 30px;">
@@ -80,8 +81,8 @@
 </style>
 
 <script>
-const mapUrlPoi = '<?= addslashes($mapUrl) ?>';
-const mapUrlBlank = '<?= addslashes($mapUrlBlank) ?>';
+const mapUrlPoi = <?= json_encode((string) $mapUrl, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>;
+const mapUrlBlank = <?= json_encode((string) $mapUrlBlank, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>;
 
 function showMap(type) {
     const mapImg = document.getElementById('map-image');

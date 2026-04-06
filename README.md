@@ -105,6 +105,7 @@ Variáveis principais:
 - FORTNITE_API_URL: URL base da API Fortnite
 - APP_ENV: development|production
 - APP_DEBUG: true|false
+- APP_STRICT_CONFIG: true|false, falha cedo em produção quando variáveis críticas faltarem
 - APP_BASE_URL: opcional, sobrescreve autodetecção de base URL
 - CACHE_ENABLED: habilita/desabilita cache local
 - CACHE_TTL: TTL padrão do cache (segundos)
@@ -118,7 +119,7 @@ composer install
 composer start
 ```
 
-Acesse: http://localhost:8000
+Acesse: [http://localhost:8000](http://localhost:8000)
 
 ### Opção 2: XAMPP/Apache
 
@@ -128,7 +129,7 @@ Acesse: http://localhost:8000
 Exemplo comum:
 
 - projeto em C:/xampp/htdocs/Fortnite
-- acesso via http://localhost/Fortnite/public
+- acesso via [http://localhost/Fortnite/public](http://localhost/Fortnite/public)
 
 ### Opção 3: Docker
 
@@ -136,7 +137,7 @@ Exemplo comum:
 docker-compose up -d
 ```
 
-Acesse: http://localhost:8080
+Acesse: [http://localhost:8080](http://localhost:8080)
 
 ## Testes e Qualidade
 

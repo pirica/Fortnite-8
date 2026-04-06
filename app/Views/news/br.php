@@ -1,19 +1,20 @@
 <div class="page-container container-fn">
-    <div class="page-header">
-        <h1 class="text-gradient">🎮 Notícias Battle Royale</h1>
-        <?php if ($lastUpdate): ?>
-        <p class="page-subtitle">
-            Última atualização: <?= date('d/m/Y H:i', strtotime($lastUpdate)) ?>
-        </p>
-        <?php endif; ?>
-    </div>
+    <?php
+    $title = '🎮 Notícias Battle Royale';
+    $subtitle = $lastUpdate ? 'Última atualização: ' . date('d/m/Y H:i', strtotime($lastUpdate)) : null;
+    include __DIR__ . '/../partials/page-header.php';
+    ?>
     
     <?php if (empty($news)): ?>
-    <div class="state-card">
-        <span style="font-size: 4rem;">🎮</span>
-        <h3 style="margin: 20px 0;">Nenhuma notícia disponível</h3>
-        <a href="<?= $baseUrl ?>/news" class="btn-fn">Ver todas as notícias</a>
-    </div>
+    <?php
+    $icon = '🎮';
+    $title = 'Nenhuma notícia disponível';
+    $message = ' '; 
+    $actions = '<a href="' . htmlspecialchars($baseUrl) . '/news" class="btn-fn">Ver todas as notícias</a>';
+    $variant = 'default';
+    $size = 'default';
+    include __DIR__ . '/../partials/state-card.php';
+    ?>
     <?php else: ?>
     
     <!-- Featured News (first item) -->
@@ -42,25 +43,15 @@
         <?php foreach ($news as $index => $item): 
             $imageUrl = $item['tileImage'] ?? $item['image'] ?? '';
             $priority = $item['sortingPriority'] ?? 0;
+            $newsClasses = $priority >= 5 ? 'news-card--hot' : '';
+            $newsTitle = $item['title'] ?? 'Sem título';
+            $newsBody = htmlspecialchars((string) ($item['body'] ?? ''));
+            $newsImageUrl = $imageUrl;
+            $newsBadgeLeft = '';
+            $newsBadgeRight = $priority >= 5 ? '<span style="background: var(--fn-orange);">🔥 HOT</span>' : '';
+            $newsDelay = $index * 0.05 . 's';
+            include __DIR__ . '/../partials/news-card.php';
         ?>
-        <div class="item-card news-card" style="animation-delay: <?= $index * 0.05 ?>s;">
-            <?php if ($priority >= 5): ?>
-            <span style="position: absolute; top: 10px; right: 10px; background: var(--fn-orange); padding: 3px 10px; border-radius: 4px; font-size: 0.75rem;">
-                🔥 HOT
-            </span>
-            <?php endif; ?>
-            
-            <?php if ($imageUrl): ?>
-            <img src="<?= htmlspecialchars($imageUrl) ?>" alt="<?= htmlspecialchars($item['title'] ?? '') ?>" loading="lazy">
-            <?php endif; ?>
-            
-            <div class="card-body">
-                <h5 class="card-title"><?= htmlspecialchars($item['title'] ?? 'Sem título') ?></h5>
-                <p class="card-text" style="color: var(--text-secondary); font-size: 0.9rem;">
-                    <?= htmlspecialchars($item['body'] ?? '') ?>
-                </p>
-            </div>
-        </div>
         <?php endforeach; ?>
     </div>
     

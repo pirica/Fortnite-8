@@ -1,12 +1,9 @@
 <div class="page-container container-fn">
-    <div class="page-header">
-        <h1 class="text-gradient">🛒 Loja de Hoje</h1>
-        <?php if ($shopDate): ?>
-        <p class="page-subtitle">
-            Atualizada em: <?= date('d/m/Y H:i', strtotime($shopDate)) ?>
-        </p>
-        <?php endif; ?>
-    </div>
+    <?php
+    $title = '🛒 Loja de Hoje';
+    $subtitle = $shopDate ? 'Atualizada em: ' . date('d/m/Y H:i', strtotime($shopDate)) : null;
+    include __DIR__ . '/../partials/page-header.php';
+    ?>
     
     <!-- Search Bar -->
     <form class="search-box" action="<?= $baseUrl ?>/shop" method="GET" style="max-width: 500px; margin: 0 auto 40px;">
@@ -16,17 +13,23 @@
     </form>
     
     <?php if (!empty($apiError)): ?>
-    <div class="state-card">
-        <p style="font-size: 3rem;">⚠️</p>
-        <h3>Loja temporariamente indisponível</h3>
-        <p><?= htmlspecialchars($apiError) ?></p>
-    </div>
+    <?php
+    $icon = '⚠️';
+    $title = 'Loja temporariamente indisponível';
+    $message = htmlspecialchars($apiError);
+    $variant = 'error';
+    $size = 'default';
+    include __DIR__ . '/../partials/state-card.php';
+    ?>
     <?php elseif (empty($sections)): ?>
-    <div class="state-card">
-        <p style="font-size: 3rem;">🛍️</p>
-        <h3>Nenhum item encontrado</h3>
-        <p>Tente buscar por outro termo.</p>
-    </div>
+    <?php
+    $icon = '🛍️';
+    $title = 'Nenhum item encontrado';
+    $message = 'Tente buscar por outro termo.';
+    $variant = 'default';
+    $size = 'default';
+    include __DIR__ . '/../partials/state-card.php';
+    ?>
     <?php else: ?>
     
     <?php foreach ($sections as $sectionName => $items): ?>
@@ -40,47 +43,32 @@
         
         <div class="items-grid">
             <?php foreach ($items as $item): ?>
-            <div class="item-card rarity-<?= htmlspecialchars($item['rarity']) ?>">
-                <?php if ($item['banner']): ?>
-                <span class="item-badge" style="position: absolute; top: 10px; right: 10px; background: var(--fn-orange); padding: 3px 8px; border-radius: 4px; font-size: 0.7rem;">
-                    <?= htmlspecialchars($item['banner']) ?>
-                </span>
-                <?php endif; ?>
-                
-                <?php if ($item['series']): ?>
-                <span class="series-badge" style="position: absolute; top: 10px; left: 10px; background: rgba(0,0,0,0.7); padding: 3px 8px; border-radius: 4px; font-size: 0.7rem;">
-                    ⭐ <?= htmlspecialchars($item['series']) ?>
-                </span>
-                <?php endif; ?>
-                
-                <img src="<?= htmlspecialchars($item['image']) ?>" 
-                     alt="<?= htmlspecialchars($item['name']) ?>"
-                     onerror="this.src='<?= $baseUrl ?>/img/logo.png'"
-                     loading="lazy">
-                
-                <div class="card-body">
-                    <h5 class="card-title"><?= htmlspecialchars($item['name']) ?></h5>
-                    
-                    <?php if ($item['type']): ?>
-                    <p style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 8px;">
-                        <?= htmlspecialchars($item['type']) ?>
-                    </p>
-                    <?php endif; ?>
-                    
-                    <p class="card-text">
-                        <?php if ($item['regularPrice'] > $item['price']): ?>
-                        <span style="text-decoration: line-through; color: var(--text-secondary); margin-right: 8px;">
-                            <?= number_format($item['regularPrice'], 0, ',', '.') ?>
-                        </span>
-                        <?php endif; ?>
-                        💰 <?= number_format($item['price'], 0, ',', '.') ?> V-Bucks
-                    </p>
-                    
-                    <?php if ($item['giftable']): ?>
-                    <span style="font-size: 0.75rem; color: var(--fn-green);">🎁 Presenteável</span>
-                    <?php endif; ?>
-                </div>
-            </div>
+            <?php
+            $itemClasses = 'rarity-' . (string) $item['rarity'];
+            $imageUrl = (string) $item['image'];
+            $altText = (string) $item['name'];
+            $itemTitle = (string) $item['name'];
+            $topLeftBadge = !empty($item['series']) ? '⭐ ' . htmlspecialchars((string) $item['series']) : '';
+            $topRightBadge = !empty($item['banner']) ? htmlspecialchars((string) $item['banner']) : '';
+            $bodyHtml = '';
+
+            if (!empty($item['type'])) {
+                $bodyHtml .= '<p style="color: var(--text-secondary); font-size: 0.8rem; margin-bottom: 8px;">' . htmlspecialchars((string) $item['type']) . '</p>';
+            }
+
+            $bodyHtml .= '<p class="card-text">';
+            if ((float) $item['regularPrice'] > (float) $item['price']) {
+                $bodyHtml .= '<span style="text-decoration: line-through; color: var(--text-secondary); margin-right: 8px;">' . number_format((float) $item['regularPrice'], 0, ',', '.') . '</span>';
+            }
+            $bodyHtml .= '💰 ' . number_format((float) $item['price'], 0, ',', '.') . ' V-Bucks</p>';
+
+            if (!empty($item['giftable'])) {
+                $bodyHtml .= '<span style="font-size: 0.75rem; color: var(--fn-green);">🎁 Presenteável</span>';
+            }
+
+            $onErrorFallback = "this.src='" . $baseUrl . "/img/logo.png'";
+            include __DIR__ . '/../partials/item-card.php';
+            ?>
             <?php endforeach; ?>
         </div>
     </section>

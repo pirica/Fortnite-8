@@ -6,7 +6,6 @@ namespace Tests\Unit;
 
 use PHPUnit\Framework\TestCase;
 use FortniteHub\Core\Controller;
-use FortniteHub\Core\Router;
 
 final class RouterDummyController extends Controller
 {
@@ -34,13 +33,8 @@ final class RouterDummyController extends Controller
  */
 class RouterTest extends TestCase
 {
-    /** @var Router */
-    private $router;
-
     protected function setUp(): void
     {
-        $this->router = new Router();
-
         if (!class_exists('FortniteHub\\Controllers\\TestController')) {
             class_alias(RouterDummyController::class, 'FortniteHub\\Controllers\\TestController');
         }
@@ -49,40 +43,49 @@ class RouterTest extends TestCase
         RouterDummyController::$receivedParams = [];
     }
 
+    private function makeRouter(): \FortniteHub\Core\Router
+    {
+        return new \FortniteHub\Core\Router();
+    }
+
     public function testCanBeInstantiated(): void
     {
-        $this->assertInstanceOf(Router::class, $this->router);
+        $this->assertInstanceOf(\FortniteHub\Core\Router::class, $this->makeRouter());
     }
 
     public function testCanSetBasePath(): void
     {
-        $this->router->setBasePath('/test/path');
+        $router = $this->makeRouter();
+        $router->setBasePath('/test/path');
         // No exception means success
         $this->assertTrue(true);
     }
 
     public function testCanAddGetRoute(): void
     {
-        $this->router->get('/test', 'TestController', 'index');
+        $router = $this->makeRouter();
+        $router->get('/test', 'TestController', 'index');
         // No exception means success
         $this->assertTrue(true);
     }
 
     public function testCanAddPostRoute(): void
     {
-        $this->router->post('/test', 'TestController', 'store');
+        $router = $this->makeRouter();
+        $router->post('/test', 'TestController', 'store');
         // No exception means success
         $this->assertTrue(true);
     }
 
     public function testCanDispatchRouteWithParams(): void
     {
-        $this->router->get('/items/{id}', 'TestController', 'show');
+        $router = $this->makeRouter();
+        $router->get('/items/{id}', 'TestController', 'show');
 
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['REQUEST_URI'] = '/items/123';
 
-        $this->router->dispatch();
+        $router->dispatch();
 
         $this->assertTrue(RouterDummyController::$called);
         $this->assertSame(['123'], RouterDummyController::$receivedParams);
@@ -90,26 +93,28 @@ class RouterTest extends TestCase
 
     public function testDispatchSupportsBasePath(): void
     {
-        $this->router->setBasePath('/fortnite/public');
-        $this->router->get('/health', 'TestController', 'index');
+        $router = $this->makeRouter();
+        $router->setBasePath('/fortnite/public');
+        $router->get('/health', 'TestController', 'index');
 
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['REQUEST_URI'] = '/fortnite/public/health';
 
-        $this->router->dispatch();
+        $router->dispatch();
 
         $this->assertTrue(RouterDummyController::$called);
     }
 
     public function testMethodNotAllowedReturns405(): void
     {
-        $this->router->get('/status', 'TestController', 'index');
+        $router = $this->makeRouter();
+        $router->get('/status', 'TestController', 'index');
 
         $_SERVER['REQUEST_METHOD'] = 'POST';
         $_SERVER['REQUEST_URI'] = '/status';
 
         ob_start();
-        $this->router->dispatch();
+        $router->dispatch();
         ob_end_clean();
 
         $this->assertSame(405, http_response_code());
@@ -117,11 +122,13 @@ class RouterTest extends TestCase
 
     public function testNotFoundReturns404(): void
     {
+        $router = $this->makeRouter();
+
         $_SERVER['REQUEST_METHOD'] = 'GET';
         $_SERVER['REQUEST_URI'] = '/route-that-does-not-exist';
 
         ob_start();
-        $this->router->dispatch();
+        $router->dispatch();
         ob_end_clean();
 
         $this->assertSame(404, http_response_code());

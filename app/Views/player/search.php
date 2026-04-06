@@ -1,8 +1,9 @@
 <div class="page-container container-fn">
-    <div class="page-header">
-        <h1 class="text-gradient">🔍 Buscar Jogador</h1>
-        <p class="page-subtitle">Pesquise estatísticas de qualquer jogador do Fortnite</p>
-    </div>
+    <?php
+    $title = '🔍 Buscar Jogador';
+    $subtitle = 'Pesquise estatísticas de qualquer jogador do Fortnite';
+    include __DIR__ . '/../partials/page-header.php';
+    ?>
     
     <!-- Search Form -->
     <form class="search-box" action="<?= $baseUrl ?>/player" method="GET" style="max-width: 600px; margin: 0 auto 40px;">
@@ -20,14 +21,14 @@
     </form>
     
     <?php if ($error): ?>
-    <div class="state-card" style="max-width: 600px; margin: 0 auto; border: 1px solid var(--fn-orange);">
-        <span style="font-size: 3rem;">😕</span>
-        <h3 style="margin: 20px 0 10px; color: var(--fn-orange);">Jogador não encontrado</h3>
-        <p style="color: var(--text-secondary);"><?= htmlspecialchars($error) ?></p>
-        <p style="color: var(--text-secondary); margin-top: 15px; font-size: 0.9rem;">
-            Verifique se o nome está correto e se o perfil é público.
-        </p>
-    </div>
+    <?php
+    $icon = '😕';
+    $title = 'Jogador não encontrado';
+    $message = htmlspecialchars($error) . '<br><span style="display:block; margin-top: 14px; color: var(--text-secondary); font-size: 0.9rem;">Verifique se o nome está correto e se o perfil é público.</span>';
+    $variant = 'error';
+    $size = 'default';
+    include __DIR__ . '/../partials/state-card.php';
+    ?>
     
     <?php elseif ($playerData): ?>
     

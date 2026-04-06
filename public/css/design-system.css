@@ -500,6 +500,29 @@ button:focus-visible {
     box-shadow: var(--elevation-1);
 }
 
+.state-card--default {
+    max-width: 720px;
+    margin: 0 auto;
+}
+
+.state-card--wide {
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+.state-card--error {
+    border-color: rgba(255, 107, 0, 0.35);
+}
+
+.state-card__icon {
+    font-size: 4rem;
+    margin-bottom: 10px;
+}
+
+.state-card__actions {
+    margin-top: 28px;
+}
+
 .state-card h3 {
     margin: 14px 0 8px;
 }
@@ -547,6 +570,10 @@ button:focus-visible {
     box-shadow: var(--elevation-1);
 }
 
+.item-card--feature {
+    border-top: 3px solid var(--rarity-legendary);
+}
+
 .item-card:hover {
     transform: translateY(-8px) scale(1.02);
     border-color: var(--fn-purple);
@@ -563,6 +590,23 @@ button:focus-visible {
     padding: 20px;
 }
 
+.item-badge {
+    position: absolute;
+    top: 10px;
+    padding: 3px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
+    z-index: 1;
+}
+
+.item-badge--left {
+    left: 10px;
+}
+
+.item-badge--right {
+    right: 10px;
+}
+
 .item-card .card-title {
     font-family: 'Russo One', sans-serif;
     color: var(--fn-blue);
@@ -571,6 +615,34 @@ button:focus-visible {
 }
 
 .item-card .card-text {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+.news-card {
+    position: relative;
+    animation: fadeInUp 0.5s ease forwards;
+    opacity: 0;
+}
+
+.news-card__badge {
+    position: absolute;
+    top: 10px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    z-index: 1;
+}
+
+.news-card__badge--left {
+    left: 10px;
+}
+
+.news-card__badge--right {
+    right: 10px;
+}
+
+.news-card__body {
     color: var(--text-secondary);
     font-size: 0.9rem;
 }

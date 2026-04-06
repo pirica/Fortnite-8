@@ -66,12 +66,12 @@
 </style>
 
 <script>
-const popularSkins = <?= json_encode($popularSkins) ?>;
+const popularSkins = <?= json_encode($popularSkins, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>;
 const basePath = '<?= $baseUrl ?>';
 let currentPage = 1;
 let isLoading = false;
 let hasMore = true;
-let currentQuery = '<?= addslashes($searchQuery) ?>';
+let currentQuery = <?= json_encode((string) $searchQuery, JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_AMP | JSON_HEX_QUOT) ?>;
 let allItems = [];
 
 const grid = document.getElementById('cosmetics-grid');

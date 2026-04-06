@@ -27,7 +27,7 @@ final class Env
 
         foreach ($lines as $line) {
             $trimmed = trim($line);
-            if ($trimmed === '' || strpos($trimmed, '#') === 0) {
+            if ($trimmed === '' || strpos($trimmed, '#') === 0 || strpos($trimmed, ';') === 0) {
                 continue;
             }
 
@@ -35,30 +35,18 @@ final class Env
                 continue;
             }
 
-            [$key, $value] = explode('=', $line, 2);
-            $key = trim($key);
-            $value = trim($value);
+            if (preg_match('/^\s*(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=\s*(.*)\s*$/', $line, $matches) !== 1) {
+                continue;
+            }
+
+            $key = trim($matches[1]);
+            $value = self::normalizeValue($matches[2]);
 
             if ($key == '') {
                 continue;
             }
 
-            if (preg_match('/^(["\'])(.*)\\1$/', $value, $matches) === 1) {
-                $value = $matches[2];
-            }
-
-            self::$loaded[$key] = $value;
-
-            // Do not overwrite variables already defined by server/runtime.
-            if (getenv($key) === false) {
-                putenv($key . '=' . $value);
-            }
-            if (!isset($_ENV[$key])) {
-                $_ENV[$key] = $value;
-            }
-            if (!isset($_SERVER[$key])) {
-                $_SERVER[$key] = $value;
-            }
+            self::set($key, $value);
         }
     }
 
@@ -89,5 +77,42 @@ final class Env
 
         $parsed = filter_var($value, FILTER_VALIDATE_BOOLEAN, FILTER_NULL_ON_FAILURE);
         return $parsed ?? $default;
+    }
+
+    public static function reset(): void
+    {
+        self::$loaded = [];
+    }
+
+    private static function set(string $key, string $value): void
+    {
+        self::$loaded[$key] = $value;
+
+        // Do not overwrite variables already defined by server/runtime.
+        if (getenv($key) === false) {
+            putenv($key . '=' . $value);
+        }
+        if (!isset($_ENV[$key])) {
+            $_ENV[$key] = $value;
+        }
+        if (!isset($_SERVER[$key])) {
+            $_SERVER[$key] = $value;
+        }
+    }
+
+    private static function normalizeValue(string $rawValue): string
+    {
+        $value = trim($rawValue);
+
+        if (preg_match('/^"(.*)"$/s', $value, $matches) === 1) {
+            return stripcslashes($matches[1]);
+        }
+
+        if (preg_match('/^\'(.*)\'$/s', $value, $matches) === 1) {
+            return $matches[1];
+        }
+
+        $value = preg_replace('/\s+#.*$/', '', $value);
+        return trim((string) $value);
     }
 }

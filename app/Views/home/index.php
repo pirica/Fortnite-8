@@ -25,36 +25,44 @@
     <div class="features-grid">
         
         <!-- Shop Card -->
-        <div class="feature-card">
-            <div class="feature-icon">🛒</div>
-            <h3>Loja Diária</h3>
-            <p>Confira todos os itens disponíveis na loja de hoje em tempo real.</p>
-            <a href="<?= $baseUrl ?>/shop" class="btn-fn">Ver Loja</a>
-        </div>
+        <?php
+        $featureIcon = '🛒';
+        $featureTitle = 'Loja Diária';
+        $featureText = 'Confira todos os itens disponíveis na loja de hoje em tempo real.';
+        $featureLink = $baseUrl . '/shop';
+        $featureLinkLabel = 'Ver Loja';
+        include __DIR__ . '/../partials/feature-card.php';
+        ?>
         
         <!-- News Card -->
-        <div class="feature-card">
-            <div class="feature-icon">📰</div>
-            <h3>Últimas Notícias</h3>
-            <p>Fique por dentro das atualizações, eventos e patch notes.</p>
-            <a href="<?= $baseUrl ?>/news" class="btn-fn">Ver Notícias</a>
-        </div>
+        <?php
+        $featureIcon = '📰';
+        $featureTitle = 'Últimas Notícias';
+        $featureText = 'Fique por dentro das atualizações, eventos e patch notes.';
+        $featureLink = $baseUrl . '/news';
+        $featureLinkLabel = 'Ver Notícias';
+        include __DIR__ . '/../partials/feature-card.php';
+        ?>
         
         <!-- Cosmetics Card -->
-        <div class="feature-card">
-            <div class="feature-icon">✨</div>
-            <h3>Cosméticos</h3>
-            <p>Explore todos os cosméticos disponíveis no jogo.</p>
-            <a href="<?= $baseUrl ?>/cosmetics" class="btn-fn">Explorar</a>
-        </div>
+        <?php
+        $featureIcon = '✨';
+        $featureTitle = 'Cosméticos';
+        $featureText = 'Explore todos os cosméticos disponíveis no jogo.';
+        $featureLink = $baseUrl . '/cosmetics';
+        $featureLinkLabel = 'Explorar';
+        include __DIR__ . '/../partials/feature-card.php';
+        ?>
         
         <!-- Map Card -->
-        <div class="feature-card">
-            <div class="feature-icon">🗺️</div>
-            <h3>Mapa Atual</h3>
-            <p>Veja o mapa atual do Battle Royale com todos os POIs.</p>
-            <a href="<?= $baseUrl ?>/map" class="btn-fn">Ver Mapa</a>
-        </div>
+        <?php
+        $featureIcon = '🗺️';
+        $featureTitle = 'Mapa Atual';
+        $featureText = 'Veja o mapa atual do Battle Royale com todos os POIs.';
+        $featureLink = $baseUrl . '/map';
+        $featureLinkLabel = 'Ver Mapa';
+        include __DIR__ . '/../partials/feature-card.php';
+        ?>
         
     </div>
 </section>
@@ -68,21 +76,25 @@
     <div class="items-grid" style="max-width: 1000px; margin: 0 auto;">
         <?php if (!empty($featuredItems)): ?>
             <?php foreach ($featuredItems as $item): ?>
-            <div class="item-card rarity-legendary">
-                <img src="<?= htmlspecialchars($item['image']) ?>" 
-                     alt="<?= htmlspecialchars($item['name']) ?>" 
-                     onerror="this.src='<?= $baseUrl ?>/img/logo.png'">
-                <div class="card-body">
-                    <h5 class="card-title"><?= htmlspecialchars($item['name']) ?></h5>
-                    <p class="card-text">💰 <?= number_format($item['price'], 0, ',', '.') ?> V-Bucks</p>
-                </div>
-            </div>
+            <?php
+            $itemClasses = 'rarity-legendary item-card--feature';
+            $imageUrl = (string) $item['image'];
+            $altText = (string) $item['name'];
+            $itemTitle = (string) $item['name'];
+            $bodyHtml = '<p class="card-text">💰 ' . number_format((float) $item['price'], 0, ',', '.') . ' V-Bucks</p>';
+            $onErrorFallback = "this.src='" . $baseUrl . "/img/logo.png'";
+            include __DIR__ . '/../partials/item-card.php';
+            ?>
             <?php endforeach; ?>
         <?php elseif (!empty($apiError)): ?>
-            <div class="state-card" style="grid-column: 1/-1;">
-                <h3>Não foi possível carregar os destaques</h3>
-                <p><?= htmlspecialchars($apiError) ?></p>
-            </div>
+            <?php
+            $icon = '⚠️';
+            $title = 'Não foi possível carregar os destaques';
+            $message = htmlspecialchars($apiError);
+            $variant = 'default';
+            $size = 'wide';
+            include __DIR__ . '/../partials/state-card.php';
+            ?>
         <?php else: ?>
             <div class="feature-card loading-shimmer" style="height: 220px; grid-column: 1/-1;"></div>
         <?php endif; ?>
